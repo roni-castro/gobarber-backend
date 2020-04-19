@@ -1,0 +1,14 @@
+{
+  "name": "gobarber-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/roni-castro/gobarber-backend.git",
+  "author": "Roni <roni.c.castro@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
