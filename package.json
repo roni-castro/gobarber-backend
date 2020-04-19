@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc",
-    "dev": "ts-node-dev --transpileOnly --ignore-watch node_modules src/server.ts",
+    "dev": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/server.ts",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "dependencies": {
