@@ -5,6 +5,6 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
-app.listen(3000, () => {
-  console.log('Started server on port 3000');
+app.listen(3333, () => {
+  console.log('Started server on port 3333');
 });
