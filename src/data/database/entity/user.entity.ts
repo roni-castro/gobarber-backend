@@ -12,13 +12,16 @@ export default class User {
   id: string;
 
   @Column()
+  name: string;
+
+  @Column()
   email: string;
 
   @Column()
   password: string;
 
   @CreateDateColumn()
-  createt_at: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
