@@ -1,7 +1,7 @@
 import { startOfHour } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
 import AppointmentRepository from '../../data/appointments/appointment.repository';
-import Appointment from '../../data/database/entity/appointments.entity';
+import Appointment from '../../data/database/entity/appointment.entity';
 
 interface AppointmentRequestDTO {
   provider: string;
