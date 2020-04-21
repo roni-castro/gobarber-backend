@@ -4,13 +4,13 @@ import AppointmentRepository from '../../data/appointments/appointment.repositor
 import Appointment from '../../data/database/entity/appointment.entity';
 
 interface AppointmentRequestDTO {
-  provider: string;
+  provider_id: string;
   date: Date;
 }
 
 export default class CreateAppointmentUseCase {
   async execute({
-    provider,
+    provider_id,
     date,
   }: AppointmentRequestDTO): Promise<Appointment> {
     const repository = getCustomRepository(AppointmentRepository);
@@ -19,7 +19,10 @@ export default class CreateAppointmentUseCase {
     if (appointmentFound) {
       throw new Error('This appointment already exists');
     }
-    const appointment = repository.create({ provider, date: parsedDate });
+    const appointment = repository.create({
+      provider_id,
+      date: parsedDate,
+    });
     await repository.save(appointment);
     return appointment;
   }
