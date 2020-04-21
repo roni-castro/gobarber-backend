@@ -2,23 +2,21 @@ import { parseISO } from 'date-fns';
 import { Router } from 'express';
 import CreateAppointmentUseCase from '../../domain/appointments/create-appointment.usecase';
 import FindAppointmentUseCase from '../../domain/appointments/find-appointment.usecase';
-import AppointmentRepository from './appointment.repository';
 
 const appointmentsRouter = Router();
-const repository = new AppointmentRepository();
 
-appointmentsRouter.get('/', (request, response) => {
-  const findAppointmentUseCase = new FindAppointmentUseCase(repository);
-  const appointments = findAppointmentUseCase.execute();
+appointmentsRouter.get('/', async (request, response) => {
+  const findAppointmentUseCase = new FindAppointmentUseCase();
+  const appointments = await findAppointmentUseCase.execute();
   response.json(appointments);
 });
 
-appointmentsRouter.post('/', (request, response) => {
+appointmentsRouter.post('/', async (request, response) => {
   try {
-    const { provider, startDate } = request.body;
-    const createAppointmentUseCase = new CreateAppointmentUseCase(repository);
-    const appointment = createAppointmentUseCase.execute({
-      date: parseISO(startDate),
+    const { provider, date } = request.body;
+    const createAppointmentUseCase = new CreateAppointmentUseCase();
+    const appointment = await createAppointmentUseCase.execute({
+      date: parseISO(date),
       provider,
     });
     return response.json(appointment);
