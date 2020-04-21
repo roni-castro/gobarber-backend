@@ -1,7 +1,14 @@
 import { Router } from 'express';
 import CreateUserUseCase from '../../domain/users/create-user.usecase';
+import FindUsersUseCase from '../../domain/users/find-users.usecase';
 
 const usersRouter = Router();
+
+usersRouter.get('/', async (request, response) => {
+  const useCase = new FindUsersUseCase();
+  const users = await useCase.execute();
+  return response.json(users);
+});
 
 usersRouter.post('/', async (request, response) => {
   try {
