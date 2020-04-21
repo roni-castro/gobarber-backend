@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import { hash } from 'bcryptjs';
 import User from '../../data/database/entity/user.entity';
 
 interface CreateUserRequestDTO {
@@ -18,10 +19,11 @@ export default class CreateUserUseCase {
     if (userFound) {
       throw new Error('Email already used');
     }
+    const hashedPassword = await hash(password, 8);
     const user: User = repository.create({
       name,
       email,
-      password,
+      password: hashedPassword,
     });
     await repository.save(user);
     return user;

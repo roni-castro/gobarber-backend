@@ -6,7 +6,12 @@ const usersRouter = Router();
 
 usersRouter.get('/', async (request, response) => {
   const useCase = new FindUsersUseCase();
-  const users = await useCase.execute();
+  let users = await useCase.execute();
+  users = users.map(user => {
+    // eslint-disable-next-line no-param-reassign
+    delete user.password;
+    return user;
+  });
   return response.json(users);
 });
 
@@ -15,6 +20,7 @@ usersRouter.post('/', async (request, response) => {
     const { name, email, password } = request.body;
     const useCase = new CreateUserUseCase();
     const user = await useCase.execute({ name, email, password });
+    delete user.password;
     return response.json(user);
   } catch (error) {
     return response.status(400).json({ message: error.message });
