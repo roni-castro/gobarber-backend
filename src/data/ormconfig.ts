@@ -6,12 +6,12 @@ const config: ConnectionOptions = {
   port: 5432,
   username: 'postgres',
   password: 'postgres',
-  database: 'postgres',
-  entities: [`src/data/entity/**/*.ts`],
-  migrations: ['src/data/migration/**/*.ts'],
+  database: 'gobarber',
+  entities: [`src/data/database/entity/**/*.ts`],
+  migrations: ['src/data/database/migration/**/*.ts'],
   cli: {
-    entitiesDir: 'src/data/entity',
-    migrationsDir: 'src/data/migrations',
+    entitiesDir: 'src/data/database/entity',
+    migrationsDir: 'src/data/database/migration',
   },
 };
 
