@@ -21,8 +21,8 @@ export default class CreateSessionUseCase {
     if (!userFound) {
       throw new Error('Email or password does not match');
     }
-    const isPassowordValid = await compare(password, userFound.password);
-    if (!isPassowordValid) {
+    const isPasswordValid = await compare(password, userFound.password);
+    if (!isPasswordValid) {
       throw new Error('Email or password does not match');
     }
     const { secretKey, expiresIn } = signingConfig;
@@ -30,6 +30,9 @@ export default class CreateSessionUseCase {
       expiresIn,
     });
     request.user = userFound;
-    return { token, user_id: userFound.id };
+    return {
+      token,
+      user: { id: userFound.id, email: userFound.email, name: userFound.name },
+    };
   }
 }

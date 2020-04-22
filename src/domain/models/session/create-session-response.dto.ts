@@ -1,4 +1,10 @@
 export interface CreateSessionResponseDTO {
-  user_id: string;
+  user: UserResponseDTO;
   token: string;
+}
+
+interface UserResponseDTO {
+  id: string;
+  email: string;
+  name: string;
 }
