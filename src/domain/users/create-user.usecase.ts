@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 import User from '../../data/database/entity/user.entity';
+import AppError from '../../data/error/AppError';
 
 interface CreateUserRequestDTO {
   name: string;
@@ -17,7 +18,7 @@ export default class CreateUserUseCase {
     const repository = getRepository(User);
     const userFound = await repository.findOne({ where: { email } });
     if (userFound) {
-      throw new Error('Email already used');
+      throw new AppError('Email already used');
     }
     const hashedPassword = await hash(password, 8);
     const user: User = repository.create({

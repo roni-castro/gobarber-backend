@@ -21,15 +21,11 @@ usersRouter.get('/', async (request, response) => {
 });
 
 usersRouter.post('/', async (request, response) => {
-  try {
-    const { name, email, password } = request.body;
-    const useCase = new CreateUserUseCase();
-    const user = await useCase.execute({ name, email, password });
-    delete user.password;
-    return response.json(user);
-  } catch (error) {
-    return response.status(400).json({ message: error.message });
-  }
+  const { name, email, password } = request.body;
+  const useCase = new CreateUserUseCase();
+  const user = await useCase.execute({ name, email, password });
+  delete user.password;
+  return response.json(user);
 });
 
 usersRouter.patch(
@@ -37,17 +33,13 @@ usersRouter.patch(
   checkTokenMiddleware,
   upload.single('avatar'),
   async (request, response) => {
-    try {
-      const useCase = new UpdateUserAvatarUseCase();
-      const user = await useCase.execute({
-        avatarFilename: request.file.filename,
-        user_id: request.user.id,
-      });
-      delete user.password;
-      return response.json(user);
-    } catch (error) {
-      return response.status(400).json({ message: error.message });
-    }
+    const useCase = new UpdateUserAvatarUseCase();
+    const user = await useCase.execute({
+      avatarFilename: request.file.filename,
+      user_id: request.user.id,
+    });
+    delete user.password;
+    return response.json(user);
   }
 );
 

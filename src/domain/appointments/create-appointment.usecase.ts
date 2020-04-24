@@ -2,6 +2,7 @@ import { startOfHour } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
 import AppointmentRepository from '../../data/appointments/appointment.repository';
 import Appointment from '../../data/database/entity/appointment.entity';
+import AppError from '../../data/error/AppError';
 
 interface AppointmentRequestDTO {
   provider_id: string;
@@ -17,7 +18,7 @@ export default class CreateAppointmentUseCase {
     const parsedDate = startOfHour(date);
     const appointmentFound = await repository.findByDate(parsedDate);
     if (appointmentFound) {
-      throw new Error('This appointment already exists');
+      throw new AppError('This appointment already exists');
     }
     const appointment = repository.create({
       provider_id,
