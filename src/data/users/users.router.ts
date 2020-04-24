@@ -38,7 +38,6 @@ usersRouter.patch(
   upload.single('avatar'),
   async (request, response) => {
     try {
-      console.log(request.file);
       const useCase = new UpdateUserAvatarUseCase();
       const user = await useCase.execute({
         avatarFilename: request.file.filename,
