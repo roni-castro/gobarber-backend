@@ -7,10 +7,9 @@ import checkTokenMiddleware from '../middlewares/check-token.middleware';
 const routes = Router();
 
 routes.use('/sessions', sessionRouter);
+routes.use('/users', usersRouter);
 
 routes.use(checkTokenMiddleware);
-
 routes.use('/appointments', appointmentsRouter);
-routes.use('/users', usersRouter);
 
 export default routes;

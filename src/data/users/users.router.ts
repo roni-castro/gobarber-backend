@@ -1,8 +1,13 @@
 import { Router } from 'express';
+import multer from 'multer';
 import CreateUserUseCase from '../../domain/users/create-user.usecase';
 import FindUsersUseCase from '../../domain/users/find-users.usecase';
+import checkTokenMiddleware from '../middlewares/check-token.middleware';
+import uploadConfig from '../upload/upload-config';
+import UpdateUserAvatarUseCase from '../../domain/users/update-user-avatar.usecase';
 
 const usersRouter = Router();
+const upload = multer(uploadConfig);
 
 usersRouter.get('/', async (request, response) => {
   const useCase = new FindUsersUseCase();
@@ -26,5 +31,25 @@ usersRouter.post('/', async (request, response) => {
     return response.status(400).json({ message: error.message });
   }
 });
+
+usersRouter.patch(
+  '/avatar',
+  checkTokenMiddleware,
+  upload.single('avatar'),
+  async (request, response) => {
+    try {
+      console.log(request.file);
+      const useCase = new UpdateUserAvatarUseCase();
+      const user = await useCase.execute({
+        avatarFilename: request.file.filename,
+        user_id: request.user.id,
+      });
+      delete user.password;
+      return response.json(user);
+    } catch (error) {
+      return response.status(400).json({ message: error.message });
+    }
+  }
+);
 
 export default usersRouter;
