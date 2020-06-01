@@ -4,14 +4,19 @@ import User from '../infra/typeorm/entities/user.entity';
 import uploadConfig from '@shared/infra/http/routes/upload/upload-config';
 import AppError from '@shared/error/AppError';
 import IUserRepository from '../repositories/IUserRepository';
+import { inject, injectable } from 'tsyringe';
 
 interface UpdateUserAvatarRequestDTO {
   user_id: string;
   avatarFilename: string;
 }
 
+@injectable()
 export default class UpdateUserAvatarUseCase {
-  constructor(private repository: IUserRepository) {}
+  constructor(
+    @inject('UserRepository')
+    private repository: IUserRepository
+  ) {}
 
   async execute({
     user_id,

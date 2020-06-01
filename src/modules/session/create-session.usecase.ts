@@ -5,14 +5,19 @@ import AppError from '@shared/error/AppError';
 import signingConfig from '@config/signing.constants';
 import { CreateSessionResponseDTO } from './models/create-session-response.dto';
 import IUserRepository from '@modules/users/repositories/IUserRepository';
+import { inject, injectable } from 'tsyringe';
 
 interface CreateSessionRequest {
   email: string;
   password: string;
 }
 
+@injectable()
 export default class CreateSessionUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    @inject('UserRepository')
+    private userRepository: IUserRepository
+  ) {}
 
   async execute({
     email,

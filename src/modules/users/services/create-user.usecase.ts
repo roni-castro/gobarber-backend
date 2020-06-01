@@ -2,6 +2,7 @@ import { hash } from 'bcryptjs';
 import User from '../infra/typeorm/entities/user.entity';
 import AppError from '@shared/error/AppError';
 import IUserRepository from '../repositories/IUserRepository';
+import { injectable, inject } from 'tsyringe';
 
 interface CreateUserRequestDTO {
   name: string;
@@ -9,8 +10,12 @@ interface CreateUserRequestDTO {
   password: string;
 }
 
+@injectable()
 export default class CreateUserUseCase {
-  constructor(private repository: IUserRepository) {}
+  constructor(
+    @inject('UserRepository')
+    private repository: IUserRepository
+  ) {}
 
   async execute({
     name,
