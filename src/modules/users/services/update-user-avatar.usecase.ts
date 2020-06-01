@@ -2,8 +2,8 @@ import { getRepository } from 'typeorm';
 import fs from 'fs';
 import path from 'path';
 import User from '../infra/typeorm/entities/user.entity';
-import uploadConfig from '../../../shared/infra/http/data/upload/upload-config';
-import AppError from '../../../shared/error/AppError';
+import uploadConfig from '@shared/infra/http/routes/upload/upload-config';
+import AppError from '@shared/error/AppError';
 
 interface UpdateUserAvatarRequestDTO {
   user_id: string;

@@ -1,4 +1,5 @@
 import { getCustomRepository } from 'typeorm';
+
 import AppointmentRepository from '../repositories/appointment.repository';
 import Appointment from '../infra/typeorm/entities/appointment.entity';
 

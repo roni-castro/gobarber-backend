@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc",
-    "dev": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/shared/infra/http/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --inspect --transpileOnly --ignore-watch node_modules src/shared/infra/http/server.ts",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./src/shared/database/ormconfig.ts"
+    "typeorm:cli": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli -f ./src/shared/infra/typeorm/ormconfig.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -40,6 +40,7 @@
     "eslint-plugin-prettier": "^3.1.3",
     "prettier": "^2.0.4",
     "ts-node-dev": "^1.0.0-pre.44",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^3.8.3"
   }
 }

@@ -2,10 +2,10 @@ import { compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 
+import AppError from '@shared/error/AppError';
+import signingConfig from '@config/signing.constants';
 import User from '../users/infra/typeorm/entities/user.entity';
-import { CreateSessionResponseDTO } from '../../domain/models/session/create-session-response.dto';
-import AppError from '../../shared/error/AppError';
-import signingConfig from '../../config/signing.constants';
+import { CreateSessionResponseDTO } from './models/create-session-response.dto';
 
 interface CreateSessionRequestDTO {
   email: string;

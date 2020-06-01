@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import signingConstants from '../../../../config/signing.constants';
-import AppError from '../../../error/AppError';
+import signingConstants from '@config/signing.constants';
+import AppError from '@shared/error/AppError';
 
 interface TokenPayload {
   iat: number;

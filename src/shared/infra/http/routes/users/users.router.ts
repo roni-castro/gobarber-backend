@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import multer from 'multer';
-import CreateUserUseCase from '../../../../../modules/users/services/create-user.usecase';
-import FindUsersUseCase from '../../../../../modules/users/services/find-users.usecase';
-import checkTokenMiddleware from '../../middlewares/check-token.middleware';
+import CreateUserUseCase from '@modules/users/services/create-user.usecase';
+import FindUsersUseCase from '@modules/users/services/find-users.usecase';
+import checkTokenMiddleware from '@modules/users/infra/middlewares/check-token.middleware';
 import uploadConfig from '../upload/upload-config';
-import UpdateUserAvatarUseCase from '../../../../../modules/users/services/update-user-avatar.usecase';
+import UpdateUserAvatarUseCase from '@modules/users/services/update-user-avatar.usecase';
 
 const usersRouter = Router();
 const upload = multer(uploadConfig);

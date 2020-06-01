@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import express from 'express';
 import cors from 'cors';
-import routes from './data';
-import '../../typeorm';
+import routes from './routes';
+import '../typeorm';
 
 const app = express();
 app.use(express.json());

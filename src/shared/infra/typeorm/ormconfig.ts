@@ -7,11 +7,11 @@ const config: ConnectionOptions = {
   username: 'postgres',
   password: 'postgres',
   database: 'gobarber',
-  entities: [`src/**/entities/*.ts`],
-  migrations: ['src/**/database/migration/*.ts'],
+  entities: ['src/**/entities/**/*.ts'],
+  migrations: ['src/**/typeorm/migrations/**/*.ts'],
   cli: {
-    entitiesDir: 'src/**/entities/*.ts',
-    migrationsDir: 'src/**/database/migration/*.ts',
+    entitiesDir: 'src/**/entities/**/*.ts',
+    migrationsDir: 'src/**/typeorm/migrations/**/*.ts',
   },
 };
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import CreateSessionUseCase from '../../../../../modules/session/create-session.usecase';
+import CreateSessionUseCase from '@modules/session/create-session.usecase';
 
 const sessionRouter = Router();
 
