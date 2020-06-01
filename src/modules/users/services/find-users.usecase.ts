@@ -1,9 +1,10 @@
-import { getRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/user.entity';
+import IUserRepository from '../repositories/IUserRepository';
 
 export default class FindUsersUseCase {
+  constructor(private repository: IUserRepository) {}
+
   execute(): Promise<User[]> {
-    const repository = getRepository(User);
-    return repository.find();
+    return this.repository.findAll();
   }
 }

@@ -1,24 +1,24 @@
 import { compare } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 
 import AppError from '@shared/error/AppError';
 import signingConfig from '@config/signing.constants';
-import User from '../users/infra/typeorm/entities/user.entity';
 import { CreateSessionResponseDTO } from './models/create-session-response.dto';
+import IUserRepository from '@modules/users/repositories/IUserRepository';
 
-interface CreateSessionRequestDTO {
+interface CreateSessionRequest {
   email: string;
   password: string;
 }
 
 export default class CreateSessionUseCase {
+  constructor(private userRepository: IUserRepository) {}
+
   async execute({
     email,
     password,
-  }: CreateSessionRequestDTO): Promise<CreateSessionResponseDTO> {
-    const userRepository = getRepository(User);
-    const userFound = await userRepository.findOne({ where: { email } });
+  }: CreateSessionRequest): Promise<CreateSessionResponseDTO> {
+    const userFound = await this.userRepository.findByEmail(email);
     if (!userFound) {
       throw new AppError('Email or password does not match', 401);
     }
