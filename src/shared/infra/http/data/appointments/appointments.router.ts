@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { Router } from 'express';
-import CreateAppointmentUseCase from '../../domain/appointments/create-appointment.usecase';
-import FindAppointmentUseCase from '../../domain/appointments/find-appointment.usecase';
+import CreateAppointmentUseCase from '../../../../../modules/appointments/services/create-appointment.usecase';
+import FindAppointmentUseCase from '../../../../../modules/appointments/services/find-appointment.usecase';
 
 const appointmentsRouter = Router();
 

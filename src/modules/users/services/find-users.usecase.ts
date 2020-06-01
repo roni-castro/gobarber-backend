@@ -1,5 +1,5 @@
 import { getRepository } from 'typeorm';
-import User from '../../data/database/entity/user.entity';
+import User from '../infra/typeorm/entities/user.entity';
 
 export default class FindUsersUseCase {
   execute(): Promise<User[]> {

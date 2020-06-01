@@ -1,6 +1,6 @@
 import { getCustomRepository } from 'typeorm';
-import AppointmentRepository from '../../data/appointments/appointment.repository';
-import Appointment from '../../data/database/entity/appointment.entity';
+import AppointmentRepository from '../repositories/appointment.repository';
+import Appointment from '../infra/typeorm/entities/appointment.entity';
 
 export default class FindAppointmentUseCase {
   execute(): Promise<Appointment[]> {

@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "tsc",
-    "dev": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/server.ts",
+    "dev": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/shared/infra/http/server.ts",
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./src/data/ormconfig.ts"
+    "typeorm:cli": "ts-node ./node_modules/typeorm/cli -f ./src/shared/database/ormconfig.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
