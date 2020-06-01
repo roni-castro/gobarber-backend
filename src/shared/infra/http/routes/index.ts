@@ -3,7 +3,7 @@ import 'express-async-errors';
 
 import appointmentsRouter from '@modules/appointments/infra/http/routes/appointments.router';
 import usersRouter from './users/users.router';
-import sessionRouter from './session/session.router';
+import sessionRouter from '@modules/session/infra/http/routes/session.router';
 import checkTokenMiddleware from '@modules/users/infra/middlewares/check-token.middleware';
 import globalErrorMiddleware from '@shared/infra/http/middlewares/global-error.middleware';
 import uploadConfig from './upload/upload-config';
