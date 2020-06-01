@@ -5,9 +5,9 @@ import FindAppointmentUseCase from '@modules/appointments/services/find-appointm
 import AppointmentRepository from '@modules/appointments/infra/typeorm/repositories/appointment.repository';
 
 const appointmentsRouter = Router();
-const appointmentRepository = new AppointmentRepository();
 
 appointmentsRouter.get('/', async (request, response) => {
+  const appointmentRepository = new AppointmentRepository();
   const findAppointmentUseCase = new FindAppointmentUseCase(
     appointmentRepository
   );
@@ -17,10 +17,11 @@ appointmentsRouter.get('/', async (request, response) => {
 
 appointmentsRouter.post('/', async (request, response) => {
   try {
-    const { provider_id, date } = request.body;
+    const appointmentRepository = new AppointmentRepository();
     const createAppointmentUseCase = new CreateAppointmentUseCase(
       appointmentRepository
     );
+    const { provider_id, date } = request.body;
     const appointment = await createAppointmentUseCase.execute({
       date: parseISO(date),
       provider_id,
