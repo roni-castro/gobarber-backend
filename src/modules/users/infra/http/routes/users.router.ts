@@ -3,8 +3,8 @@ import multer from 'multer';
 import { container } from 'tsyringe';
 import CreateUserUseCase from '@modules/users/services/create-user.usecase';
 import FindUsersUseCase from '@modules/users/services/find-users.usecase';
-import checkTokenMiddleware from '@modules/users/infra/middlewares/check-token.middleware';
-import uploadConfig from '../upload/upload-config';
+import checkTokenMiddleware from '@modules/users/infra/http/middlewares/check-token.middleware';
+import uploadConfig from '@shared/infra/http/routes/upload/upload-config';
 import UpdateUserAvatarUseCase from '@modules/users/services/update-user-avatar.usecase';
 
 const usersRouter = Router();
