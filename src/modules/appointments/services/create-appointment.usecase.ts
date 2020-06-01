@@ -1,30 +1,25 @@
 import { startOfHour } from 'date-fns';
-import { getCustomRepository } from 'typeorm';
-import AppointmentRepository from '../infra/typeorm/repositories/appointment.repository';
 import Appointment from '../infra/typeorm/entities/appointment.entity';
 import AppError from '@shared/error/AppError';
-
-interface AppointmentRequestDTO {
-  provider_id: string;
-  date: Date;
-}
+import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 
 export default class CreateAppointmentUseCase {
+  constructor(private repository: IAppointmentRepository) {}
+
   async execute({
     provider_id,
     date,
-  }: AppointmentRequestDTO): Promise<Appointment> {
-    const repository = getCustomRepository(AppointmentRepository);
+  }: ICreateAppointmentDTO): Promise<Appointment> {
     const parsedDate = startOfHour(date);
-    const appointmentFound = await repository.findByDate(parsedDate);
+    const appointmentFound = await this.repository.findByDate(parsedDate);
     if (appointmentFound) {
       throw new AppError('This appointment already exists');
     }
-    const appointment = repository.create({
+    const appointment = await this.repository.create({
       provider_id,
       date: parsedDate,
     });
-    await repository.save(appointment);
     return appointment;
   }
 }

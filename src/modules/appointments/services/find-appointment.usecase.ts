@@ -1,11 +1,10 @@
-import { getCustomRepository } from 'typeorm';
-
-import AppointmentRepository from '../infra/typeorm/repositories/appointment.repository';
 import Appointment from '../infra/typeorm/entities/appointment.entity';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 
 export default class FindAppointmentUseCase {
+  constructor(private repository: IAppointmentRepository) {}
+
   execute(): Promise<Appointment[]> {
-    const repository = getCustomRepository(AppointmentRepository);
-    return repository.find();
+    return this.repository.find();
   }
 }
