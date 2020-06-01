@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 import 'express-async-errors';
-import appointmentsRouter from './appointments/appointments.router';
+
+import appointmentsRouter from '@modules/appointments/infra/http/routes/appointments.router';
 import usersRouter from './users/users.router';
 import sessionRouter from './session/session.router';
 import checkTokenMiddleware from '@modules/users/infra/middlewares/check-token.middleware';
