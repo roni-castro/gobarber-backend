@@ -3,9 +3,14 @@ import Appointment from '../infra/typeorm/entities/appointment.entity';
 import AppError from '@shared/error/AppError';
 import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
 import IAppointmentRepository from '../repositories/IAppointmentsRepository';
+import { inject, injectable } from 'tsyringe';
 
+@injectable()
 export default class CreateAppointmentUseCase {
-  constructor(private repository: IAppointmentRepository) {}
+  constructor(
+    @inject('AppointmentRepository')
+    private repository: IAppointmentRepository
+  ) {}
 
   async execute({
     provider_id,

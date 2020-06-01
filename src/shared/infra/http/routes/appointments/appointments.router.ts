@@ -2,24 +2,20 @@ import { parseISO } from 'date-fns';
 import { Router } from 'express';
 import CreateAppointmentUseCase from '@modules/appointments/services/create-appointment.usecase';
 import FindAppointmentUseCase from '@modules/appointments/services/find-appointment.usecase';
-import AppointmentRepository from '@modules/appointments/infra/typeorm/repositories/appointment.repository';
+import { container } from 'tsyringe';
 
 const appointmentsRouter = Router();
 
 appointmentsRouter.get('/', async (request, response) => {
-  const appointmentRepository = new AppointmentRepository();
-  const findAppointmentUseCase = new FindAppointmentUseCase(
-    appointmentRepository
-  );
+  const findAppointmentUseCase = container.resolve(FindAppointmentUseCase);
   const appointments = await findAppointmentUseCase.execute();
   response.json(appointments);
 });
 
 appointmentsRouter.post('/', async (request, response) => {
   try {
-    const appointmentRepository = new AppointmentRepository();
-    const createAppointmentUseCase = new CreateAppointmentUseCase(
-      appointmentRepository
+    const createAppointmentUseCase = container.resolve(
+      CreateAppointmentUseCase
     );
     const { provider_id, date } = request.body;
     const appointment = await createAppointmentUseCase.execute({

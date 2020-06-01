@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes';
 import '../typeorm';
+import '@shared/container';
 
 const app = express();
 app.use(express.json());
