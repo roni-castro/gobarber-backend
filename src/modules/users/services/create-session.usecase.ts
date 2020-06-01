@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import AppError from '@shared/error/AppError';
 import signingConfig from '@config/signing.constants';
-import { CreateSessionResponseDTO } from './models/create-session-response.dto';
+import { CreateSessionResponseDTO } from '../dtos/create-session-response.dto';
 import IUserRepository from '@modules/users/repositories/IUserRepository';
 import { inject, injectable } from 'tsyringe';
 

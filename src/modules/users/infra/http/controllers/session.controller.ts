@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import CreateSessionUseCase from '@modules/session/create-session.usecase';
+import CreateSessionUseCase from '@modules/users/services/create-session.usecase';
 import { container } from 'tsyringe';
 
 export default class SessionController {
