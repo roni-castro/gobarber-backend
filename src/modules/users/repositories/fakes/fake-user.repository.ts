@@ -1,10 +1,11 @@
+import { uuid } from 'uuidv4';
+
 import IUserRepository from '@modules/users/repositories/IUserRepository';
 import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO';
-import { uuid } from 'uuidv4';
 import User from '../../infra/typeorm/entities/user.entity';
 
-class UserRepository implements IUserRepository {
-  private users: User[];
+class FakeUserRepository implements IUserRepository {
+  private users: User[] = [];
 
   async findByEmail(email: string) {
     return this.users.find(user => user.email === email);
@@ -21,7 +22,7 @@ class UserRepository implements IUserRepository {
   async create({ name, email, password }: ICreateUserDTO) {
     const user: User = new User();
     Object.assign(user, { id: uuid(), email, name, password });
-    await this.users.push(user);
+    this.users.push(user);
     return user;
   }
 
@@ -34,4 +35,4 @@ class UserRepository implements IUserRepository {
   }
 }
 
-export default UserRepository;
+export default FakeUserRepository;
