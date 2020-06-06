@@ -1,10 +1,8 @@
-import fs from 'fs';
-import path from 'path';
 import User from '../infra/typeorm/entities/user.entity';
-import uploadConfig from '@shared/infra/http/routes/upload/upload-config';
 import AppError from '@shared/error/AppError';
 import IUserRepository from '../repositories/IUserRepository';
 import { inject, injectable } from 'tsyringe';
+import IStorageProvider from '@shared/container/providers/storageProvider/models/IStorageProvider';
 
 interface UpdateUserAvatarRequestDTO {
   user_id: string;
@@ -15,7 +13,9 @@ interface UpdateUserAvatarRequestDTO {
 export default class UpdateUserAvatarUseCase {
   constructor(
     @inject('UserRepository')
-    private repository: IUserRepository
+    private repository: IUserRepository,
+    @inject('DiskStorageProvider')
+    private diskStorageProvider: IStorageProvider
   ) {}
 
   async execute({
@@ -27,15 +27,12 @@ export default class UpdateUserAvatarUseCase {
       throw new AppError('Only authenticated users can change avatar', 401);
     }
     if (user.avatar) {
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      try {
-        await fs.promises.stat(userAvatarFilePath);
-        await fs.promises.unlink(userAvatarFilePath);
-      } catch (error) {
-        console.log(error);
-      }
+      await this.diskStorageProvider.deleteFile(user.avatar);
     }
-    user.avatar = avatarFilename;
+    const fileUploaded = await this.diskStorageProvider.saveFile(
+      avatarFilename
+    );
+    user.avatar = fileUploaded;
     await this.repository.save(user);
     return user;
   }
