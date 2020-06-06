@@ -59,7 +59,9 @@ describe('UpdateUserAvatar', () => {
 
     expect(updatedUser.id).toBe(newUserAvatarData.user_id);
     expect(updatedUser.avatar).toBe(newUserAvatarData.avatarFilename);
-    expect(deleteFileMock).toHaveBeenCalledTimes(1);
+    expect(deleteFileMock).toHaveBeenCalledWith(
+      updateUserAvatarData.avatarFilename
+    );
   });
 
   it('should not be able to update avatar when user does not exists', async () => {
