@@ -12,7 +12,7 @@ export default class DiskStorageProvider implements IStorageProvider {
     return file;
   }
   async deleteFile(file: string): Promise<void> {
-    const userAvatarFilePath = path.join(uploadConfig.tmpFolder, file);
+    const userAvatarFilePath = path.join(uploadConfig.uploadsFolder, file);
     try {
       await fs.promises.stat(userAvatarFilePath);
       await fs.promises.unlink(userAvatarFilePath);

@@ -12,7 +12,7 @@ const routes = Router();
 
 routes.use('/sessions', sessionRouter);
 routes.use('/users', usersRouter);
-routes.use('/files', express.static(uploadConfig.tmpFolder));
+routes.use('/files', express.static(uploadConfig.uploadsFolder));
 
 routes.use(checkTokenMiddleware);
 routes.use('/appointments', appointmentsRouter);
