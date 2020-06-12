@@ -25,6 +25,9 @@ export default class SendForgotPasswordEmailUseCase {
       throw new AppError('User does not exists');
     }
     const userToken = await this.userTokenRepository.generate(userFound.id);
-    return this.emailProvider.sendEmail(email, 'Pedido enviado');
+    return this.emailProvider.sendEmail(
+      email,
+      `Pedido enviado ${userToken.token}`
+    );
   }
 }
