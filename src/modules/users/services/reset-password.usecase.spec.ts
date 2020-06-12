@@ -33,7 +33,6 @@ describe('ResetPassword', () => {
     const newPassword = '111222';
     const userUpdated = await resetPasswordUseCase.execute({
       token: userToken.token,
-      oldPassword: userData.password,
       password: newPassword,
       confirmPassword: newPassword,
     });
@@ -52,7 +51,6 @@ describe('ResetPassword', () => {
     await expect(
       resetPasswordUseCase.execute({
         token: userToken.token,
-        oldPassword: userData.password,
         password: '111222',
         confirmPassword: '111222',
       })
@@ -63,7 +61,6 @@ describe('ResetPassword', () => {
     await expect(
       resetPasswordUseCase.execute({
         token: 'non existing token',
-        oldPassword: '123456',
         password: '123456',
         confirmPassword: '123456',
       })
@@ -77,7 +74,6 @@ describe('ResetPassword', () => {
     await expect(
       resetPasswordUseCase.execute({
         token: userToken.token,
-        oldPassword: '123456',
         password: '123456',
         confirmPassword: '123456',
       })
@@ -90,22 +86,8 @@ describe('ResetPassword', () => {
     await expect(
       resetPasswordUseCase.execute({
         token: userToken.token,
-        oldPassword: userData.password,
         password: '111222',
         confirmPassword: 'different password',
-      })
-    ).rejects.toBeInstanceOf(AppError);
-  });
-
-  it('should be able to reset password if old password does not match', async () => {
-    const user = await fakeUserRepository.create(userData);
-    const userToken = await fakeUserTokenRepository.generate(user.id);
-    await expect(
-      resetPasswordUseCase.execute({
-        token: userToken.token,
-        oldPassword: 'invalid old password',
-        password: '111222',
-        confirmPassword: '111222',
       })
     ).rejects.toBeInstanceOf(AppError);
   });

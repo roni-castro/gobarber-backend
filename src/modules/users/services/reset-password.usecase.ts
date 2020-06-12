@@ -8,7 +8,6 @@ import IHashProvider from '../providers/hashProvider/models/IHashProvider';
 
 interface IRequest {
   token: string;
-  oldPassword: string;
   password: string;
   confirmPassword: string;
 }
@@ -26,7 +25,6 @@ export default class ResetPasswordUseCase {
 
   public async execute({
     token,
-    oldPassword,
     password,
     confirmPassword,
   }: IRequest): Promise<User> {
@@ -47,14 +45,6 @@ export default class ResetPasswordUseCase {
     const user = await this.userRepository.findById(userToken.user_id);
     if (!user) {
       throw new AppError('User not found');
-    }
-
-    const isOldPasswordValid = await this.hashProvider.compareHash(
-      user.password,
-      oldPassword
-    );
-    if (!isOldPasswordValid) {
-      throw new AppError('Old password is not correct');
     }
 
     user.password = await this.hashProvider.generateHash(password);
