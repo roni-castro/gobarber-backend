@@ -14,6 +14,8 @@ usersRouter.get('/', checkTokenMiddleware, userController.show);
 
 usersRouter.post('/', userController.create);
 
+usersRouter.post('/', userController.create);
+
 usersRouter.patch(
   '/avatar',
   checkTokenMiddleware,

@@ -9,7 +9,17 @@ export default class UserTokenRepository implements IUserTokenRepository {
     this.ormRepository = getRepository(UserToken);
   }
 
+  async findByToken(token: string) {
+    return this.ormRepository.findOne({
+      where: { token },
+    });
+  }
+
   async generate(userId: string) {
-    return {} as UserToken;
+    const userToken = this.ormRepository.create({
+      user_id: userId,
+    });
+    this.ormRepository.save(userToken);
+    return userToken;
   }
 }
