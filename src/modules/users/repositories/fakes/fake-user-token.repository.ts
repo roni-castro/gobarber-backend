@@ -17,4 +17,8 @@ export default class FakeUserTokenRepository implements IUserTokenRepository {
     this.userTokens.push(userToken);
     return userToken;
   }
+
+  public async findByToken(token: string) {
+    return this.userTokens.find(currToken => currToken.token === token);
+  }
 }
