@@ -24,7 +24,7 @@ describe('FindUserProfileUseCase', () => {
   });
 
   it('should throw error if user is not found', async () => {
-    expect(
+    await expect(
       findUserUseCase.execute({ id: 'invalid user id' })
     ).rejects.toBeInstanceOf(AppError);
   });
