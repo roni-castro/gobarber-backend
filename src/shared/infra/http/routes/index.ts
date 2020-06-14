@@ -3,6 +3,7 @@ import 'express-async-errors';
 
 import appointmentsRouter from '@modules/appointments/infra/http/routes/appointments.router';
 import usersRouter from '@modules/users/infra/http/routes/users.router';
+import userProfileRouter from '@modules/users/infra/http/routes/user-profile.router';
 import sessionRouter from '@modules/users/infra/http/routes/session.router';
 import checkTokenMiddleware from '@modules/users/infra/http/middlewares/check-token.middleware';
 import globalErrorMiddleware from '@shared/infra/http/middlewares/global-error.middleware';
@@ -13,6 +14,7 @@ const routes = Router();
 
 routes.use('/sessions', sessionRouter);
 routes.use('/users', usersRouter);
+routes.use('/user', userProfileRouter);
 routes.use('/password', passwordRouter);
 routes.use('/files', express.static(uploadConfig.uploadsFolder));
 

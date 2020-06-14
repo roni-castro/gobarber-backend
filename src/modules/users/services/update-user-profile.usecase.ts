@@ -42,8 +42,13 @@ export default class UpdateUserProfileUseCase {
       throw new AppError('Password and confirmation password do not match');
     }
 
+    if (password && !oldPassword) {
+      throw new AppError('Old password is required to change to a new one');
+    }
+
     if (
       password &&
+      oldPassword &&
       (await this.hasInvalidOldPassword(user.password, oldPassword))
     ) {
       throw new AppError('Old password does not match');
@@ -61,11 +66,8 @@ export default class UpdateUserProfileUseCase {
 
   private async hasInvalidOldPassword(
     currentPassword: string,
-    password?: string
+    password: string
   ) {
-    if (!password) {
-      return true;
-    }
     const hasValidPassword = await this.hashProvider.compareHash(
       password,
       currentPassword
@@ -81,7 +83,7 @@ export default class UpdateUserProfileUseCase {
   }
 
   private async hasUserWithExistingEmail(userEmail: string, newEmail?: string) {
-    if (newEmail && userEmail !== newEmail) {
+    if (newEmail && newEmail !== userEmail) {
       const userWithExistingEmail = await this.userRepository.findByEmail(
         newEmail
       );
