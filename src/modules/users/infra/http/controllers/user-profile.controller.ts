@@ -9,9 +9,6 @@ export default class UserProfileController {
   public async show(request: Request, response: Response) {
     const useCase = container.resolve(FindUserUseCase);
     let user = await useCase.execute({ id: request.user.id });
-    if (!user) {
-      throw new AppError('User not found', 404);
-    }
     delete user.password;
     return response.json(user);
   }
