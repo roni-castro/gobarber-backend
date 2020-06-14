@@ -4,19 +4,26 @@ import CreateSessionUseCase from './create-session.usecase';
 import CreateUserUseCase from './create-user.usecase';
 import FakeHashProvider from '../providers/hashProvider/fakes/fake-hash.provider';
 
-describe('CreateSession', () => {
-  it('should be able to create a session', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createSessionUseCase = new CreateSessionUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
-    const createUserUseCase = new CreateUserUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
+let fakeUserRepository: FakeUserRepository;
+let fakeHashProvider: FakeHashProvider;
+let createSessionUseCase: CreateSessionUseCase;
+let createUserUseCase: CreateUserUseCase;
 
+describe('CreateSession', () => {
+  beforeEach(() => {
+    fakeUserRepository = new FakeUserRepository();
+    fakeHashProvider = new FakeHashProvider();
+    createSessionUseCase = new CreateSessionUseCase(
+      fakeUserRepository,
+      fakeHashProvider
+    );
+    createUserUseCase = new CreateUserUseCase(
+      fakeUserRepository,
+      fakeHashProvider
+    );
+  });
+
+  it('should be able to create a session', async () => {
     const userRequestData = {
       email: 'email@teste.com',
       password: '123456',
@@ -30,12 +37,6 @@ describe('CreateSession', () => {
   });
 
   it('should throw 401 error when user does not exists', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createSessionUseCase = new CreateSessionUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
     const userRequestData = {
       email: 'email@teste.com',
       password: '123456',
@@ -46,17 +47,6 @@ describe('CreateSession', () => {
   });
 
   it('should throw 401 error when password does not match', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createSessionUseCase = new CreateSessionUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
-    const createUserUseCase = new CreateUserUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
-
     const userRequestData = {
       email: 'email@teste.com',
       password: '123456',

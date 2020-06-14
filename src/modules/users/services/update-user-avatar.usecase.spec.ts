@@ -3,15 +3,21 @@ import UpdateUserAvatarUseCase from './update-user-avatar.usecase';
 import FakeDiskStorageProvider from '@shared/container/providers/storageProvider/fakes/fake-disk-storage.provider';
 import AppError from '@shared/error/AppError';
 
+let fakeUserRepository: FakeUserRepository;
+let fakeDiskStorageProvider: FakeDiskStorageProvider;
+let uploadUserAvatarUseCase: UpdateUserAvatarUseCase;
+
 describe('UpdateUserAvatar', () => {
-  it('should be able to update a user avatar', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeDiskStorageProvider = new FakeDiskStorageProvider();
-    const uploadUserAvatarUseCase = new UpdateUserAvatarUseCase(
+  beforeEach(() => {
+    fakeUserRepository = new FakeUserRepository();
+    fakeDiskStorageProvider = new FakeDiskStorageProvider();
+    uploadUserAvatarUseCase = new UpdateUserAvatarUseCase(
       fakeUserRepository,
       fakeDiskStorageProvider
     );
+  });
 
+  it('should be able to update a user avatar', async () => {
     const user = await fakeUserRepository.create({
       name: 'Teste',
       email: 'email@teste.com',
@@ -30,12 +36,6 @@ describe('UpdateUserAvatar', () => {
   });
 
   it('should delete old avatar when updating new one', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeDiskStorageProvider = new FakeDiskStorageProvider();
-    const uploadUserAvatarUseCase = new UpdateUserAvatarUseCase(
-      fakeUserRepository,
-      fakeDiskStorageProvider
-    );
     const deleteFileMock = jest.spyOn(fakeDiskStorageProvider, 'deleteFile');
 
     const user = await fakeUserRepository.create({
@@ -65,13 +65,6 @@ describe('UpdateUserAvatar', () => {
   });
 
   it('should not be able to update avatar when user does not exists', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeDiskStorageProvider = new FakeDiskStorageProvider();
-    const uploadUserAvatarUseCase = new UpdateUserAvatarUseCase(
-      fakeUserRepository,
-      fakeDiskStorageProvider
-    );
-
     const updateUserAvatarData = {
       user_id: 'invalid user id',
       avatarFilename: 'avatar.jpg',

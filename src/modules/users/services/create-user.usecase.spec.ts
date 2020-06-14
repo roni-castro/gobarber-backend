@@ -3,14 +3,21 @@ import FakeUserRepository from '../repositories/fakes/fake-user.repository';
 import CreateUserUseCase from './create-user.usecase';
 import FakeHashProvider from '../providers/hashProvider/fakes/fake-hash.provider';
 
+let fakeUserRepository: FakeUserRepository;
+let fakeHashProvider: FakeHashProvider;
+let createUserUseCase: CreateUserUseCase;
+
 describe('CreateUser', () => {
-  it('should be able to create a new user', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createUserUseCase = new CreateUserUseCase(
+  beforeEach(() => {
+    fakeUserRepository = new FakeUserRepository();
+    fakeHashProvider = new FakeHashProvider();
+    createUserUseCase = new CreateUserUseCase(
       fakeUserRepository,
       fakeHashProvider
     );
+  });
+
+  it('should be able to create a new user', async () => {
     const userRequestData = {
       name: 'Teste',
       email: 'email@teste.com',
@@ -23,12 +30,6 @@ describe('CreateUser', () => {
   });
 
   it('should not be able to create user with existing email', async () => {
-    const fakeUserRepository = new FakeUserRepository();
-    const fakeHashProvider = new FakeHashProvider();
-    const createUserUseCase = new CreateUserUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
     const userRequestData = {
       name: 'Teste',
       email: 'email@teste.com',
