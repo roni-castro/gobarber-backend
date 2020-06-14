@@ -41,7 +41,7 @@ describe('CreateSession', () => {
       email: 'email@teste.com',
       password: '123456',
     };
-    expect(
+    await expect(
       createSessionUseCase.execute(userRequestData)
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -52,7 +52,7 @@ describe('CreateSession', () => {
       password: '123456',
     };
     await createUserUseCase.execute({ ...userRequestData, name: 'Teste' });
-    expect(
+    await expect(
       createSessionUseCase.execute({
         ...userRequestData,
         password: 'wrong pass',

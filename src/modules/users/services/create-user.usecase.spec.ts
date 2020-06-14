@@ -36,8 +36,8 @@ describe('CreateUser', () => {
       password: '123456',
     };
     await createUserUseCase.execute(userRequestData);
-    expect(createUserUseCase.execute(userRequestData)).rejects.toBeInstanceOf(
-      AppError
-    );
+    await expect(
+      createUserUseCase.execute(userRequestData)
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

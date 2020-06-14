@@ -70,7 +70,7 @@ describe('UpdateUserAvatar', () => {
       avatarFilename: 'avatar.jpg',
     };
 
-    expect(
+    await expect(
       uploadUserAvatarUseCase.execute(updateUserAvatarData)
     ).rejects.toEqual(
       new AppError('Only authenticated users can change avatar', 401)
