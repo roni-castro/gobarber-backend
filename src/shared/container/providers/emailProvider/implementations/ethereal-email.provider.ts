@@ -1,8 +1,17 @@
-import nodemailer, { Transporter } from 'nodemailer';
+import nodemailer, { Transporter, SendMailOptions } from 'nodemailer';
 import IEmailProvider from '../models/IEmailProvider';
+import ISendEmailDTO from '../dtos/send-email.dto';
+import { inject, injectable } from 'tsyringe';
+import IEmailTemplateProvider from '../../mailTemplateProvider/models/email-template.provider';
 
+@injectable()
 export default class EtherealEmailProvider implements IEmailProvider {
   private client: Transporter;
+
+  constructor(
+    @inject('EmailTemplateProvider')
+    private emailTemplateProvider: IEmailTemplateProvider
+  ) {}
 
   private async getConnection() {
     if (!this.client) {
@@ -21,12 +30,19 @@ export default class EtherealEmailProvider implements IEmailProvider {
     return this.client;
   }
 
-  public async sendEmail(to: string, body: string) {
-    let message = {
-      from: 'Equipe GoBarber <euipe@gobarber.com.br>',
-      to,
-      subject: 'Recuperação de senha',
-      text: body,
+  public async sendEmail({ to, from, subject, templateData }: ISendEmailDTO) {
+    const template = await this.emailTemplateProvider.parse(templateData);
+    let message: SendMailOptions = {
+      from: {
+        name: from?.name || 'Equipe GoBarber',
+        address: from?.email || 'equipe@gobarber.com.br',
+      },
+      to: {
+        name: to.name,
+        address: to.email,
+      },
+      subject,
+      html: template,
     };
     const client = await this.getConnection();
     const sentMessage = await client.sendMail(message);

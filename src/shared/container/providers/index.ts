@@ -3,6 +3,8 @@ import { container } from 'tsyringe';
 import DiskStorageProvider from './storageProvider/implementations/disk-storage.provider';
 import EtherealEmailProvider from './emailProvider/implementations/ethereal-email.provider';
 import IEmailProvider from './emailProvider/models/IEmailProvider';
+import IEmailTemplateProvider from './mailTemplateProvider/models/email-template.provider';
+import HandlebarsEmailTemplateProvider from './mailTemplateProvider/implementations/handlebars-email-template.provoider';
 
 container.registerSingleton<IStorageProvider>(
   'DiskStorageProvider',
@@ -12,4 +14,9 @@ container.registerSingleton<IStorageProvider>(
 container.registerSingleton<IEmailProvider>(
   'EmailProvider',
   EtherealEmailProvider
+);
+
+container.registerSingleton<IEmailTemplateProvider>(
+  'EmailTemplateProvider',
+  HandlebarsEmailTemplateProvider
 );
