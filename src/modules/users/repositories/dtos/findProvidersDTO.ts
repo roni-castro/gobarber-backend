@@ -1,3 +1,3 @@
-export default interface FindProvidersDTO {
-  exceptUserId: string
+export default interface IFindProvidersDTO {
+  exceptUserId?: string;
 }
