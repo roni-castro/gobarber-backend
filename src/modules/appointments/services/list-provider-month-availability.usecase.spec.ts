@@ -1,18 +1,17 @@
-import fakeAppointmentRepository from '../../users/repositories/fakes/fake-user.repository';
-import ListMonthAvailabilityProvidersUseCase from './list-month-availability-provider.usecase';
+import ListProviderMonthAvailabilityUseCase from './list-provider-month-availability.usecase';
 import FakeAppointmentRepository from '../repositories/fakes/fake-appointment.repository';
 import {
   NUMBER_OF_SERVICE_HOURS_A_DAY,
   FIRST_SERVICE_HOUR,
 } from '../utils/constants';
 
-describe('ListMonthAvailabilityProvidersUseCase', () => {
+describe('ListProviderMonthAvailabilityUseCase', () => {
   let fakeAppointmentRepository: FakeAppointmentRepository;
-  let listMonthAvailabilityProvidersUseCase: ListMonthAvailabilityProvidersUseCase;
+  let listProviderMonthAvailabilityUseCase: ListProviderMonthAvailabilityUseCase;
 
   beforeEach(() => {
     fakeAppointmentRepository = new FakeAppointmentRepository();
-    listMonthAvailabilityProvidersUseCase = new ListMonthAvailabilityProvidersUseCase(
+    listProviderMonthAvailabilityUseCase = new ListProviderMonthAvailabilityUseCase(
       fakeAppointmentRepository
     );
   });
@@ -37,7 +36,7 @@ describe('ListMonthAvailabilityProvidersUseCase', () => {
       provider_id: providerId,
     });
 
-    const response = await listMonthAvailabilityProvidersUseCase.execute({
+    const response = await listProviderMonthAvailabilityUseCase.execute({
       userId: providerId,
       month: 5,
       year: 2020,
