@@ -54,7 +54,7 @@
 **RF**
 
 - O usuário deve poder listar os prestadores de serviços
-- O usuário deve poder listar os dias de uma mês com pelo menos um horário disponível de um prestador
+- O usuário deve poder listar os dias de um mês com pelo menos um horário disponível de um prestador
 - O usuário deve poder listar os horários disponíveis de uma dia específico de um prestador
 - O usuário deve poder realizar um novo agendamento com um prestador
 
