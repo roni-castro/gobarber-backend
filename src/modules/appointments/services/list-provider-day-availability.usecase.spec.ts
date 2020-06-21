@@ -5,6 +5,9 @@ describe('ListProviderDayAvailabilityUseCase', () => {
   let fakeAppointmentRepository: FakeAppointmentRepository;
   let listProviderDayAvailabilityUseCase: ListProviderDayAvailabilityUseCase;
 
+  const clientId = 'client_id';
+  const providerId = 'provider_id';
+
   beforeEach(() => {
     fakeAppointmentRepository = new FakeAppointmentRepository();
     listProviderDayAvailabilityUseCase = new ListProviderDayAvailabilityUseCase(
@@ -13,19 +16,19 @@ describe('ListProviderDayAvailabilityUseCase', () => {
   });
 
   it('should list all hours of the day available of a provider', async () => {
-    const providerId = 'provider_id';
-
     const currentDateMock = new Date(2020, 4, 20, 7, 0, 0);
     jest.spyOn(Date, 'now').mockReturnValue(currentDateMock.getTime());
 
     await fakeAppointmentRepository.create({
       date: new Date(2020, 4, 20, 8),
       provider_id: providerId,
+      client_id: clientId,
     });
 
     await fakeAppointmentRepository.create({
       date: new Date(2020, 4, 20, 10),
       provider_id: providerId,
+      client_id: clientId,
     });
 
     const response = await listProviderDayAvailabilityUseCase.execute({
@@ -45,13 +48,13 @@ describe('ListProviderDayAvailabilityUseCase', () => {
   });
 
   it('should not return hours as available when it is on the past', async () => {
-    const providerId = 'provider_id';
     const currentDateMock = new Date(2020, 4, 20, 10, 30, 0);
     jest.spyOn(Date, 'now').mockReturnValue(currentDateMock.getTime());
 
     await fakeAppointmentRepository.create({
       date: new Date(2020, 4, 20, 12),
       provider_id: providerId,
+      client_id: clientId,
     });
 
     const response = await listProviderDayAvailabilityUseCase.execute({

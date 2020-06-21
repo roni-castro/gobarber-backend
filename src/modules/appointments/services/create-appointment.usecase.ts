@@ -13,6 +13,7 @@ export default class CreateAppointmentUseCase {
   ) {}
 
   async execute({
+    client_id,
     provider_id,
     date,
   }: ICreateAppointmentDTO): Promise<Appointment> {
@@ -22,6 +23,7 @@ export default class CreateAppointmentUseCase {
       throw new AppError('This appointment already exists');
     }
     const appointment = await this.repository.create({
+      client_id,
       provider_id,
       date: parsedDate,
     });

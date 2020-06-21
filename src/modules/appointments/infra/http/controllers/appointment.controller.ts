@@ -13,6 +13,7 @@ export default class AppointmentController {
       const { provider_id, date } = request.body;
       const appointment = await createAppointmentUseCase.execute({
         date: parseISO(date),
+        client_id: request.user.id,
         provider_id,
       });
       return response.json(appointment);
