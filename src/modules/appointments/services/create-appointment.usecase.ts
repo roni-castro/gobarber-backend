@@ -1,4 +1,4 @@
-import { startOfHour } from 'date-fns';
+import { startOfHour, isBefore } from 'date-fns';
 import Appointment from '../infra/typeorm/entities/appointment.entity';
 import AppError from '@shared/error/AppError';
 import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
@@ -22,6 +22,12 @@ export default class CreateAppointmentUseCase {
     if (appointmentFound) {
       throw new AppError('This appointment already exists');
     }
+
+    const currentDate = new Date(Date.now());
+    if (isBefore(parsedDate, currentDate)) {
+      throw new AppError('You cannot schedule an appointment on a past date');
+    }
+
     const appointment = await this.repository.create({
       client_id,
       provider_id,
