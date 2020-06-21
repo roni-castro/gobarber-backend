@@ -23,7 +23,11 @@ export default class CreateAppointmentUseCase {
       throw new AppError('This appointment already exists');
     }
 
-    const currentDate = new Date(Date.now());
+    if (client_id === provider_id) {
+      throw new AppError('You cannot schedule an appointment with yourself');
+    }
+
+    const currentDate = Date.now();
     if (isBefore(parsedDate, currentDate)) {
       throw new AppError('You cannot schedule an appointment on a past date');
     }

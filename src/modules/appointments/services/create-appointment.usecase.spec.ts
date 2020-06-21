@@ -8,6 +8,7 @@ let createAppointmentUseCase: CreateAppointmentUseCase;
 describe('CreateAppointment', () => {
   const clientId = 'client_id';
   const providerId = 'provider_id';
+  const pastDate = new Date(2020, 1, 30);
 
   beforeEach(() => {
     fakeAppointmentRepository = new FakeAppointmentRepository();
@@ -21,7 +22,7 @@ describe('CreateAppointment', () => {
   });
 
   it('should be able to create a new appointment', async () => {
-    jest.spyOn(Date, 'now').mockReturnValue(new Date(2020, 1, 30).getTime());
+    jest.spyOn(Date, 'now').mockReturnValue(pastDate.getTime());
     const date = new Date();
     const appointment = await createAppointmentUseCase.execute({
       provider_id: providerId,
@@ -33,7 +34,7 @@ describe('CreateAppointment', () => {
   });
 
   it('should not be able to create two appointments at the same time', async () => {
-    jest.spyOn(Date, 'now').mockReturnValue(new Date(2020, 1, 30).getTime());
+    jest.spyOn(Date, 'now').mockReturnValue(pastDate.getTime());
     const appointmentDate = new Date();
     await createAppointmentUseCase.execute({
       provider_id: providerId,
@@ -51,13 +52,11 @@ describe('CreateAppointment', () => {
   });
 
   it('should not be able to create appointment on a past date', async () => {
-    const appointmentOnPastDate = new Date(2020, 1, 30);
-
     await expect(
       createAppointmentUseCase.execute({
         provider_id: providerId,
         client_id: clientId,
-        date: appointmentOnPastDate,
+        date: pastDate,
       })
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -71,6 +70,18 @@ describe('CreateAppointment', () => {
       createAppointmentUseCase.execute({
         provider_id: providerId,
         client_id: clientId,
+        date: appointmentDate,
+      })
+    ).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to create an appointment when user and provider are the same person', async () => {
+    jest.spyOn(Date, 'now').mockReturnValue(pastDate.getTime());
+    const appointmentDate = new Date();
+    await expect(
+      createAppointmentUseCase.execute({
+        provider_id: providerId,
+        client_id: providerId,
         date: appointmentDate,
       })
     ).rejects.toBeInstanceOf(AppError);

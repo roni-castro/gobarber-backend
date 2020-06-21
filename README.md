@@ -68,4 +68,4 @@
 - Os agendamentos devem estar disponíveis entre 8h às 18h (Primeiro às 8h e último às 17h)
 - Não deve ser permitido agendar serviço em um horário já reservado
 - Não deve ser permitido agendar serviço em um horário/data que já passou
-- O usuário não poder agendar servicós consigo mesmo
+- O usuário não poder agendar serviços consigo mesmo
