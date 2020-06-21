@@ -28,15 +28,12 @@ export default class CreateAppointmentUseCase {
       throw new AppError('You cannot schedule an appointment with yourself');
     }
 
-    if (getHours(parsedDate) < FIRST_SERVICE_HOUR) {
+    if (
+      getHours(parsedDate) < FIRST_SERVICE_HOUR ||
+      getHours(parsedDate) > LAST_SERVICE_HOUR
+    ) {
       throw new AppError(
-        `You cannot schedule an appointment before ${FIRST_SERVICE_HOUR}am`
-      );
-    }
-
-    if (getHours(parsedDate) > LAST_SERVICE_HOUR) {
-      throw new AppError(
-        `You cannot schedule an appointment after ${LAST_SERVICE_HOUR}pm`
+        `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`
       );
     }
 
