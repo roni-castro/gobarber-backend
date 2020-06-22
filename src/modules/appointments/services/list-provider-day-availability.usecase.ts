@@ -26,7 +26,7 @@ export default class ListDayAvailabilityProvidersUseCase {
   ) {}
 
   async execute({ userId, day, month, year }: IRequest): Promise<IResponse> {
-    const appointments = await this.appointmentRepository.findAllProviderInDay({
+    const appointments = await this.appointmentRepository.findAllInDayFromProvider({
       providerId: userId,
       month,
       year,

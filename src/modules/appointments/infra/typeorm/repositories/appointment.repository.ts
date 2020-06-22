@@ -16,7 +16,7 @@ class AppointmentRepository implements IAppointmentRepository {
     return this.ormRepository.find();
   }
 
-  async findAllProviderInMonth({
+  async findAllInMonthFromProvider({
     providerId,
     month,
     year,
@@ -33,7 +33,7 @@ class AppointmentRepository implements IAppointmentRepository {
     });
   }
 
-  async findAllProviderInDay({
+  async findAllInDayFromProvider({
     providerId,
     day,
     month,

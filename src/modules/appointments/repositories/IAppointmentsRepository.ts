@@ -6,10 +6,6 @@ export default interface IAppointmentRepository {
   find(): Promise<Appointment[]>;
   create(data: ICreateAppointmentDTO): Promise<Appointment>;
   findByDate(date: Date): Promise<Appointment | undefined>;
-  findAllProviderInMonth(
-    filter: IFindAppointmentDTO
-  ): Promise<Appointment[]>;
-  findAllProviderInDay(
-    filter: IFindAppointmentDTO
-  ): Promise<Appointment[]>;
+  findAllInMonthFromProvider(filter: IFindAppointmentDTO): Promise<Appointment[]>;
+  findAllInDayFromProvider(filter: IFindAppointmentDTO): Promise<Appointment[]>;
 }

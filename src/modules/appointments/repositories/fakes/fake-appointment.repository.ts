@@ -13,7 +13,7 @@ class FakeAppointmentRepository implements IAppointmentRepository {
     return this.appointments;
   }
 
-  async findAllProviderInMonth({
+  async findAllInMonthFromProvider({
     providerId,
     year,
     month,
@@ -26,7 +26,7 @@ class FakeAppointmentRepository implements IAppointmentRepository {
     );
   }
 
-  async findAllProviderInDay({
+  async findAllInDayFromProvider({
     providerId,
     year,
     month,

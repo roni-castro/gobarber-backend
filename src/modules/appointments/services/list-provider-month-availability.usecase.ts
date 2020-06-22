@@ -22,7 +22,7 @@ export default class ListProviderMonthAvailabilityUseCase {
   ) {}
 
   async execute({ userId, month, year }: IRequest): Promise<IResponse> {
-    const appointments = await this.appointmentRepository.findAllProviderInMonth(
+    const appointments = await this.appointmentRepository.findAllInMonthFromProvider(
       {
         providerId: userId,
         month,
