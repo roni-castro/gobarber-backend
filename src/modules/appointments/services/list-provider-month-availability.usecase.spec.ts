@@ -18,6 +18,7 @@ describe('ListProviderMonthAvailabilityUseCase', () => {
 
   it('should list all days of the month available of a provider', async () => {
     const providerId = 'provider_id';
+    const clientId = 'client_id';
     const allHoursOfService = Array.from(
       { length: NUMBER_OF_SERVICE_HOURS_A_DAY },
       (_, index) => index + FIRST_SERVICE_HOUR
@@ -27,6 +28,7 @@ describe('ListProviderMonthAvailabilityUseCase', () => {
         fakeAppointmentRepository.create({
           date: new Date(2020, 4, 16, hour),
           provider_id: providerId,
+          client_id: clientId,
         })
       )
     );
@@ -34,6 +36,7 @@ describe('ListProviderMonthAvailabilityUseCase', () => {
     await fakeAppointmentRepository.create({
       date: new Date(2020, 4, 18, 9),
       provider_id: providerId,
+      client_id: clientId,
     });
 
     const response = await listProviderMonthAvailabilityUseCase.execute({
