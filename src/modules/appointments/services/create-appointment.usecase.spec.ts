@@ -2,8 +2,10 @@ import CreateAppointmentUseCase from './create-appointment.usecase';
 import FakeAppointmentRepository from '../repositories/fakes/fake-appointment.repository';
 import AppError from '@shared/error/AppError';
 import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
+import FakeNotificationRepository from '@modules/notifications/repositories/fakes/fake-notification.repository';
 
 let fakeAppointmentRepository: FakeAppointmentRepository;
+let fakeNotificationRepository: FakeNotificationRepository;
 let createAppointmentUseCase: CreateAppointmentUseCase;
 
 describe('CreateAppointment', () => {
@@ -14,8 +16,10 @@ describe('CreateAppointment', () => {
 
   beforeEach(() => {
     fakeAppointmentRepository = new FakeAppointmentRepository();
+    fakeNotificationRepository = new FakeNotificationRepository();
     createAppointmentUseCase = new CreateAppointmentUseCase(
-      fakeAppointmentRepository
+      fakeAppointmentRepository,
+      fakeNotificationRepository
     );
   });
 
