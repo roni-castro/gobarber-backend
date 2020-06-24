@@ -1,6 +1,6 @@
 import { ConnectionOptions } from 'typeorm';
 
-const config: ConnectionOptions = {
+export const postgresConfig: ConnectionOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
@@ -15,4 +15,12 @@ const config: ConnectionOptions = {
   },
 };
 
-export = config;
+export const mongoConfig: ConnectionOptions = {
+  name: 'mongo',
+  type: 'mongodb',
+  host: 'localhost',
+  port: 27017,
+  database: 'gobarber',
+  useUnifiedTopology: true,
+  entities: ['src/**/typeorm/schemas/*.ts'],
+};
