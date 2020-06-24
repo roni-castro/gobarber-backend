@@ -2,6 +2,7 @@ import { container } from 'tsyringe';
 
 import './providers';
 import '@modules/users/providers';
+import '@modules/notifications/repositories';
 import IAppointmentRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import AppointmentRepository from '@modules/appointments/infra/typeorm/repositories/appointment.repository';
 import IUserRepository from '@modules/users/repositories/IUserRepository';

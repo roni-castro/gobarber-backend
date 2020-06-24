@@ -20,6 +20,7 @@ export const mongoConfig: ConnectionOptions = {
   type: 'mongodb',
   host: 'localhost',
   port: 27017,
+  logging: false,
   database: 'gobarber',
   useUnifiedTopology: true,
   entities: ['src/**/typeorm/schemas/*.ts'],

@@ -1,7 +1,7 @@
 import { createConnections } from 'typeorm';
 import { postgresConfig, mongoConfig } from './ormconfig';
 
-createConnections([postgresConfig, mongoConfig])
+createConnections([mongoConfig, postgresConfig])
   .then(_connection => {
     console.log('Connected to database');
   })
