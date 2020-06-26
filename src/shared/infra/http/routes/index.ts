@@ -1,4 +1,5 @@
 import express, { Router } from 'express';
+import { errors } from 'celebrate';
 import 'express-async-errors';
 
 import appointmentsRouter from '@modules/appointments/infra/http/routes/appointments.router';
@@ -23,6 +24,7 @@ routes.use(checkTokenMiddleware);
 routes.use('/providers', providerRouter);
 routes.use('/appointments', appointmentsRouter);
 
+routes.use(errors());
 routes.use(globalErrorMiddleware);
 
 export default routes;
