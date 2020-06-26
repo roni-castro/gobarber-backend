@@ -8,12 +8,12 @@ export default class ProviderMonthAvailabilityController {
       ListProviderMonthAvailabilityUseCase
     );
     const { provider_id } = request.params;
-    const { month, year } = request.body;
+    const { month, year } = request.query;
     const providerAvailabilityDays = await listProviderMonthAvailabilityUseCase.execute(
       {
         userId: provider_id,
-        month,
-        year,
+        month: +month,
+        year: +year,
       }
     );
     return response.json(providerAvailabilityDays);

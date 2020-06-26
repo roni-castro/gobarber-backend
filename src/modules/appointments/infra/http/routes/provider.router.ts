@@ -26,6 +26,15 @@ providerRouter.get(
 );
 providerRouter.get(
   '/:provider_id/month-availability',
+  celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+      provider_id: Joi.string().uuid().required(),
+    }),
+    [Segments.QUERY]: Joi.object().keys({
+      month: Joi.number().integer().min(1).max(12).required(),
+      year: Joi.number().integer().min(1900).max(9999).required(),
+    }),
+  }),
   providerMonthAvailabilityController.index
 );
 
