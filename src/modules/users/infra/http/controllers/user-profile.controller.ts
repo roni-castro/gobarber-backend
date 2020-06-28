@@ -1,5 +1,6 @@
 import { container } from 'tsyringe';
 import { Request, Response } from 'express';
+import { classToClass } from 'class-transformer';
 
 import UpdateUserProfileUseCase from '@modules/users/services/update-user-profile.usecase';
 import FindUserUseCase from '@modules/users/services/find-user.usecase';
@@ -9,8 +10,7 @@ export default class UserProfileController {
   public async show(request: Request, response: Response) {
     const useCase = container.resolve(FindUserUseCase);
     let user = await useCase.execute({ id: request.user.id });
-    delete user.password;
-    return response.json(user);
+    return response.json(classToClass(user));
   }
 
   public async update(request: Request, response: Response) {
@@ -30,7 +30,6 @@ export default class UserProfileController {
       password,
       passwordConfirmation,
     });
-    delete user.password;
-    return response.json(user);
+    return response.json(classToClass(user));
   }
 }
