@@ -5,10 +5,9 @@ import checkTokenMiddleware from '@modules/users/infra/http/middlewares/check-to
 import uploadConfig from '@shared/infra/http/routes/upload/upload-config';
 import UserController from '../controllers/user.controller';
 import UserAvatarController from '../controllers/user-avatar.controller';
-import UserProfileController from '../controllers/user-profile.controller';
 
 const usersRouter = Router();
-const upload = multer(uploadConfig);
+const upload = multer(uploadConfig.multer);
 const userController = new UserController();
 const userAvatarController = new UserAvatarController();
 

@@ -14,8 +14,8 @@ export default class UpdateUserAvatarUseCase {
   constructor(
     @inject('UserRepository')
     private repository: IUserRepository,
-    @inject('DiskStorageProvider')
-    private diskStorageProvider: IStorageProvider
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider
   ) {}
 
   async execute({
@@ -27,11 +27,9 @@ export default class UpdateUserAvatarUseCase {
       throw new AppError('Only authenticated users can change avatar', 401);
     }
     if (user.avatar) {
-      await this.diskStorageProvider.deleteFile(user.avatar);
+      await this.storageProvider.deleteFile(user.avatar);
     }
-    const fileUploaded = await this.diskStorageProvider.saveFile(
-      avatarFilename
-    );
+    const fileUploaded = await this.storageProvider.saveFile(avatarFilename);
     user.avatar = fileUploaded;
     await this.repository.save(user);
     return user;
