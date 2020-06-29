@@ -18,7 +18,11 @@ export default {
   storage: multer.diskStorage({
     destination: tmpPath,
     filename(request, file, callback) {
-      const filenameHashed = `${new Date().getTime()}-${file.originalname}`;
+      const avatarFilenameFiltered = file.originalname.replace(
+        /[^a-zA-Z0-9.]/g,
+        '_'
+      );
+      const filenameHashed = `${new Date().getTime()}-${avatarFilenameFiltered}`;
       return callback(null, filenameHashed);
     },
   }),
