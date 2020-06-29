@@ -1,7 +1,7 @@
+import { inject, injectable } from 'tsyringe';
 import User from '../infra/typeorm/entities/user.entity';
 import AppError from '@shared/error/AppError';
 import IUserRepository from '../repositories/IUserRepository';
-import { inject, injectable } from 'tsyringe';
 import IStorageProvider from '@shared/container/providers/storageProvider/models/IStorageProvider';
 
 interface UpdateUserAvatarRequestDTO {
