@@ -1,13 +1,19 @@
 import FakeUserRepository from '../../users/repositories/fakes/fake-user.repository';
 import ListAllProvidersUseCase from './list-all-providers.usecase';
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fakes/fake-cache-provider';
 
 describe('ListAllProvidersUseCase', () => {
   let fakeUserRepository: FakeUserRepository;
+  let fakeCacheProvider: FakeCacheProvider;
   let listAllProvidersUseCase: ListAllProvidersUseCase;
 
   beforeEach(() => {
     fakeUserRepository = new FakeUserRepository();
-    listAllProvidersUseCase = new ListAllProvidersUseCase(fakeUserRepository);
+    fakeCacheProvider = new FakeCacheProvider();
+    listAllProvidersUseCase = new ListAllProvidersUseCase(
+      fakeUserRepository,
+      fakeCacheProvider
+    );
   });
 
   it('should list all providers', async () => {
