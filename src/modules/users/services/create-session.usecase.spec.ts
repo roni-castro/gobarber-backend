@@ -1,23 +1,17 @@
 import AppError from '@shared/error/AppError';
 import FakeUserRepository from '../repositories/fakes/fake-user.repository';
 import CreateSessionUseCase from './create-session.usecase';
-import CreateUserUseCase from './create-user.usecase';
 import FakeHashProvider from '../providers/hashProvider/fakes/fake-hash.provider';
 
 let fakeUserRepository: FakeUserRepository;
 let fakeHashProvider: FakeHashProvider;
 let createSessionUseCase: CreateSessionUseCase;
-let createUserUseCase: CreateUserUseCase;
 
 describe('CreateSession', () => {
   beforeEach(() => {
     fakeUserRepository = new FakeUserRepository();
     fakeHashProvider = new FakeHashProvider();
     createSessionUseCase = new CreateSessionUseCase(
-      fakeUserRepository,
-      fakeHashProvider
-    );
-    createUserUseCase = new CreateUserUseCase(
       fakeUserRepository,
       fakeHashProvider
     );
@@ -28,7 +22,7 @@ describe('CreateSession', () => {
       email: 'email@teste.com',
       password: '123456',
     };
-    await createUserUseCase.execute({ ...userRequestData, name: 'Teste' });
+    await fakeUserRepository.create({ ...userRequestData, name: 'Teste' });
 
     const session = await createSessionUseCase.execute(userRequestData);
     expect(session).toHaveProperty('token');
@@ -51,7 +45,7 @@ describe('CreateSession', () => {
       email: 'email@teste.com',
       password: '123456',
     };
-    await createUserUseCase.execute({ ...userRequestData, name: 'Teste' });
+    await fakeUserRepository.create({ ...userRequestData, name: 'Teste' });
     await expect(
       createSessionUseCase.execute({
         ...userRequestData,

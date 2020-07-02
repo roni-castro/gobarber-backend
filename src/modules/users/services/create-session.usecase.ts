@@ -37,7 +37,7 @@ export default class CreateSessionUseCase {
       throw new AppError('Email or password does not match', 401);
     }
     const { secretKey, expiresIn } = signingConfig;
-    const token = jwt.sign({ userId: userFound.id }, secretKey!, {
+    const token = jwt.sign({ userId: userFound.id }, secretKey, {
       subject: userFound.id,
       expiresIn,
     });
