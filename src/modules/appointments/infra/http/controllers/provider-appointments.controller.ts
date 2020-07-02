@@ -7,13 +7,13 @@ export default class ProviderAppointmentsController {
     const listProviderAppointmentsUseCase = container.resolve(
       ListProviderAppointmentsUseCase
     );
-    const { day, month, year } = request.body;
+    const { day, month, year } = request.query;
     const providerId = request.user.id;
     const appointments = await listProviderAppointmentsUseCase.execute({
       providerId,
-      day,
-      month,
-      year,
+      day: +day,
+      month: +month,
+      year: +year,
     });
     return response.json(appointments);
   }

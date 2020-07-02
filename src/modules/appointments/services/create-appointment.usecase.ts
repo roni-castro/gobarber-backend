@@ -6,6 +6,7 @@ import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { inject, injectable } from 'tsyringe';
 import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
+import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
 
 @injectable()
 export default class CreateAppointmentUseCase {
@@ -13,7 +14,9 @@ export default class CreateAppointmentUseCase {
     @inject('AppointmentRepository')
     private repository: IAppointmentRepository,
     @inject('NotificationRepository')
-    private notificationRepository: INotificationRepository
+    private notificationRepository: INotificationRepository,
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider
   ) {}
 
   async execute({
@@ -56,7 +59,9 @@ export default class CreateAppointmentUseCase {
       recipient_id: provider_id,
       content: `Novo agendamento para dia ${dateFormatted}`,
     });
-
+    await this.cacheProvider.invalidatePrefix(
+      `appointments:${format(parsedDate, 'yyyy-MM-dd')}`
+    );
     return appointment;
   }
 }
