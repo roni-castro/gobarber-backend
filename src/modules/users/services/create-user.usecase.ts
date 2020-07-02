@@ -3,6 +3,7 @@ import AppError from '@shared/error/AppError';
 import IUserRepository from '../repositories/IUserRepository';
 import { injectable, inject } from 'tsyringe';
 import IHashProvider from '../providers/hashProvider/models/IHashProvider';
+import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
 
 interface CreateUserRequestDTO {
   name: string;
@@ -16,7 +17,9 @@ export default class CreateUserUseCase {
     @inject('UserRepository')
     private repository: IUserRepository,
     @inject('HashProvider')
-    private hashProvider: IHashProvider
+    private hashProvider: IHashProvider,
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider
   ) {}
 
   async execute({
@@ -34,6 +37,7 @@ export default class CreateUserUseCase {
       email,
       password: hashedPassword,
     });
+    await this.cacheProvider.invalidatePrefix('providers-list');
     return user;
   }
 }
