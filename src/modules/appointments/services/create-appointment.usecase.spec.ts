@@ -57,17 +57,14 @@ describe('CreateAppointment', () => {
 
   it('should not clear cache of a specific day when a new appointment is registed on different day', async () => {
     jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
-    const invalidateIndexMock = jest.spyOn(
-      fakeCacheProvider,
-      'invalidatePrefix'
-    );
+    const invalidateMock = jest.spyOn(fakeCacheProvider, 'invalidate');
     const appointmentDate = new Date(2020, 0, 30, 8, 0, 0);
     const appointment = await createAppointmentUseCase.execute({
       provider_id: providerId,
       client_id: clientId,
       date: appointmentDate,
     });
-    expect(invalidateIndexMock).toHaveBeenCalledWith('appointments:2020-01-30');
+    expect(invalidateMock).toHaveBeenCalledWith('appointments:2020-01-30');
     expect(appointment.provider_id).toBe(providerId);
   });
 

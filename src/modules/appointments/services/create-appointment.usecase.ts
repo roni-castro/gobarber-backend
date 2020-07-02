@@ -59,7 +59,7 @@ export default class CreateAppointmentUseCase {
       recipient_id: provider_id,
       content: `Novo agendamento para dia ${dateFormatted}`,
     });
-    await this.cacheProvider.invalidatePrefix(
+    await this.cacheProvider.invalidate(
       `appointments:${format(parsedDate, 'yyyy-MM-dd')}`
     );
     return appointment;
