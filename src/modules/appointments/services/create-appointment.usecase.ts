@@ -25,7 +25,7 @@ export default class CreateAppointmentUseCase {
     date,
   }: ICreateAppointmentDTO): Promise<Appointment> {
     const parsedDate = startOfHour(date);
-    const appointmentFound = await this.repository.findByDate(parsedDate);
+    const appointmentFound = await this.repository.findByDate(parsedDate, provider_id);
     if (appointmentFound) {
       throw new AppError('This appointment already exists');
     }
