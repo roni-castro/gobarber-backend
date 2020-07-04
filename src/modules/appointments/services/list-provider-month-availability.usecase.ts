@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import IAppointmentRepository from '../repositories/IAppointmentsRepository';
-import { getDaysInMonth, getDate } from 'date-fns';
+import { getDaysInMonth, getDate, isAfter } from 'date-fns';
 import { NUMBER_OF_SERVICE_HOURS_A_DAY } from '../utils/constants';
 
 interface IRequest {
@@ -35,12 +35,17 @@ export default class ListProviderMonthAvailabilityUseCase {
       (_, index) => index + 1
     );
     const providerAvailabilityDays: IResponse = daysOfTheMonth.map(day => {
+      const currentDate = new Date(Date.now());
+      const dateToBeCompared = new Date(year, month - 1, day, 23, 59, 59);
+      const isAppointmentDateInFuture = isAfter(dateToBeCompared, currentDate);
       const appointmentsInDay = appointments.filter(
         appointment => getDate(appointment.date) === day
       );
       return {
         day,
-        availability: appointmentsInDay.length < NUMBER_OF_SERVICE_HOURS_A_DAY,
+        availability:
+          isAppointmentDateInFuture &&
+          appointmentsInDay.length < NUMBER_OF_SERVICE_HOURS_A_DAY,
       };
     });
     return providerAvailabilityDays;

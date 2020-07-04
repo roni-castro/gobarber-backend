@@ -26,12 +26,14 @@ export default class ListDayAvailabilityProvidersUseCase {
   ) {}
 
   async execute({ userId, day, month, year }: IRequest): Promise<IResponse> {
-    const appointments = await this.appointmentRepository.findAllInDayFromProvider({
-      providerId: userId,
-      month,
-      year,
-      day,
-    });
+    const appointments = await this.appointmentRepository.findAllInDayFromProvider(
+      {
+        providerId: userId,
+        month,
+        year,
+        day,
+      }
+    );
     const hoursOfTheDay = Array.from(
       { length: NUMBER_OF_SERVICE_HOURS_A_DAY },
       (_, index) => FIRST_SERVICE_HOUR + index

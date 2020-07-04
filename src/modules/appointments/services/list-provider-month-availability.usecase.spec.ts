@@ -17,6 +17,8 @@ describe('ListProviderMonthAvailabilityUseCase', () => {
   });
 
   it('should list all days of the month available of a provider', async () => {
+    const currentDateMock = new Date(2020, 0, 30, 8, 0, 0);
+    jest.spyOn(Date, 'now').mockReturnValue(currentDateMock.getTime());
     const providerId = 'provider_id';
     const clientId = 'client_id';
     const allHoursOfService = Array.from(
@@ -51,6 +53,26 @@ describe('ListProviderMonthAvailabilityUseCase', () => {
         { day: 18, availability: true },
         { day: 19, availability: true },
       ])
+    );
+  });
+
+  it('should list all days of the month as unavailable for past months', async () => {
+    const currentDateMock = new Date(2020, 0, 30, 8, 0, 0);
+    jest.spyOn(Date, 'now').mockReturnValue(currentDateMock.getTime());
+    const providerId = 'provider_id';
+
+    const response = await listProviderMonthAvailabilityUseCase.execute({
+      userId: providerId,
+      month: 12,
+      year: 2019,
+    });
+    const daysOfTheMonth = Array.from({ length: 31 }, (_, index) => index + 1);
+    const expectedAvailabilityResult = daysOfTheMonth.map(day => ({
+      day: day,
+      availability: false,
+    }));
+    expect(response).toEqual(
+      expect.arrayContaining(expectedAvailabilityResult)
     );
   });
 });
