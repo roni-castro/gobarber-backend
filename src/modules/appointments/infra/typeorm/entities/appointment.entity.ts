@@ -24,7 +24,7 @@ export default class Appointment {
   @Column()
   client_id: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   @JoinColumn({ name: 'client_id' })
   client: User;
 

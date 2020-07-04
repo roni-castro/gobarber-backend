@@ -19,8 +19,8 @@ export default class User {
   @Column()
   email: string;
 
-  @Column()
   @Exclude()
+  @Column({ select: false })
   password: string;
 
   @Column()
