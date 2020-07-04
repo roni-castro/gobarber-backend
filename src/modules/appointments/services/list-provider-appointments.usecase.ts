@@ -29,7 +29,7 @@ export default class ListProviderAppointmentsUseCase {
     month,
     year,
   }: IRequest): Promise<IResponse> {
-    const cacheKey = `appointments:${format(
+    const cacheKey = `appointments:${providerId}-${format(
       new Date(year, month - 1, day),
       'yyyy-MM-dd'
     )}`;

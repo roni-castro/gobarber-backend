@@ -43,7 +43,7 @@ describe('ListProviderAppointmentsUseCase', () => {
       year: 2020,
     });
     expect(
-      await fakeCacheProvider.recover(`appointments:2020-05-01`)
+      await fakeCacheProvider.recover(`appointments:${providerId}-2020-05-01`)
     ).toHaveLength(2);
     expect(appointments).toEqual([appointment1, appointment2]);
   });
