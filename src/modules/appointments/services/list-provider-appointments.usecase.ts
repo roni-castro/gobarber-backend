@@ -1,8 +1,9 @@
 import { inject, injectable } from 'tsyringe';
-import IAppointmentRepository from '../repositories/IAppointmentsRepository';
-import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
-import Appointment from '../infra/typeorm/entities/appointment.entity';
 import { format } from 'date-fns';
+import { classToClass } from 'class-transformer';
+import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
+import Appointment from '../infra/typeorm/entities/appointment.entity';
 
 interface IRequest {
   providerId: string;
@@ -42,7 +43,7 @@ export default class ListProviderAppointmentsUseCase {
         month,
         year,
       });
-      await this.cacheProvider.save(cacheKey, appointments);
+      await this.cacheProvider.save(cacheKey, classToClass(appointments));
     }
     return appointments;
   }

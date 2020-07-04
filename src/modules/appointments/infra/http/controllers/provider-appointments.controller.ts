@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 import ListProviderAppointmentsUseCase from '@modules/appointments/services/list-provider-appointments.usecase';
+import { classToClass } from 'class-transformer';
 
 export default class ProviderAppointmentsController {
   public async index(request: Request, response: Response) {
@@ -15,6 +16,6 @@ export default class ProviderAppointmentsController {
       month: +month,
       year: +year,
     });
-    return response.json(appointments);
+    return response.json(classToClass(appointments));
   }
 }

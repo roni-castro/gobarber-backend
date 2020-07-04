@@ -1,7 +1,9 @@
-import IUserRepository from '../../users/repositories/IUserRepository';
 import { inject, injectable } from 'tsyringe';
+import { classToClass } from 'class-transformer';
+import IUserRepository from '../../users/repositories/IUserRepository';
 import User from '@modules/users/infra/typeorm/entities/user.entity';
 import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
+
 
 @injectable()
 export default class ListAllProvidersUseCase {
@@ -17,7 +19,7 @@ export default class ListAllProvidersUseCase {
     let providers = await this.cacheProvider.recover<User[]>(key);
     if (!providers) {
       providers = await this.userRepository.findAllProviders({ exceptUserId });
-      this.cacheProvider.save(key, providers);
+      this.cacheProvider.save(key, classToClass(providers));
     }
     return providers;
   }

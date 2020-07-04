@@ -20,7 +20,7 @@ export default class User {
   email: string;
 
   @Exclude()
-  @Column({ select: false })
+  @Column()
   password: string;
 
   @Column()
