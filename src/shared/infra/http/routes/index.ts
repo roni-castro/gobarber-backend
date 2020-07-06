@@ -9,14 +9,16 @@ import sessionRouter from '@modules/users/infra/http/routes/session.router';
 import checkTokenMiddleware from '@modules/users/infra/http/middlewares/check-token.middleware';
 import uploadConfig from './upload/upload-config';
 import passwordRouter from '@modules/users/infra/http/routes/password.router';
+import rateLimitMiddleware from '../middlewares/rate-limit-request.middleware';
 
 const routes = Router();
 
+routes.use('/files', express.static(uploadConfig.uploadsFolder));
+routes.use(rateLimitMiddleware);
 routes.use('/sessions', sessionRouter);
 routes.use('/users', usersRouter);
 routes.use('/user', userProfileRouter);
 routes.use('/password', passwordRouter);
-routes.use('/files', express.static(uploadConfig.uploadsFolder));
 
 routes.use(checkTokenMiddleware);
 routes.use('/providers', providerRouter);
