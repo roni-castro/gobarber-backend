@@ -25,7 +25,10 @@ export default class CreateAppointmentUseCase {
     date,
   }: ICreateAppointmentDTO): Promise<Appointment> {
     const parsedDate = startOfHour(date);
-    const appointmentFound = await this.repository.findByDate(parsedDate, provider_id);
+    const appointmentFound = await this.repository.findByDate(
+      parsedDate,
+      provider_id
+    );
     if (appointmentFound) {
       throw new AppError('This appointment already exists');
     }
@@ -60,7 +63,7 @@ export default class CreateAppointmentUseCase {
       content: `Novo agendamento para dia ${dateFormatted}`,
     });
     await this.cacheProvider.invalidate(
-      `appointments:${format(parsedDate, 'yyyy-MM-dd')}`
+      `appointments:${provider_id}-${format(parsedDate, 'yyyy-MM-dd')}`
     );
     return appointment;
   }
