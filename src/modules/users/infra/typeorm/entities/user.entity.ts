@@ -35,7 +35,7 @@ export default class User {
   @Expose({ name: 'avatar_url' })
   getAvatarUrl(): string | null {
     if (!this.avatar) {
-      return null;
+      return 'https://gobarberapps3.s3.amazonaws.com/default_profile.png';
     }
     switch (uploadConfig.driver) {
       case 'disk':
