@@ -4,7 +4,7 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -14,50 +14,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-  
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v1.4.3
-      with:
-        node-version: 12.x
+      - uses: actions/checkout@v2
 
-    - name: Install the dependencies
-      run: yarn
-    
-    - name: Run build to generate dist folder
-      run: yarn build
-    
-    - name: Copy code + dist folder to DigitalOCean folder
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        port: ${{ secrets.SSH_PORT }}
-        key: ${{ secrets.SSH_KEY }}
-        source: ".,!node_modules"
-        target: "~/app/gobarber-backend"
-      
-    - name: Install dependencies on DigitalOcean and run migrations of TypeORM
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        port: ${{ secrets.SSH_PORT }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          cd ~/app/gobarber-backend
-          yarn
-          yarn typeorm:cli migration:run  
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v1.4.3
+        with:
+          node-version: 12.x
 
-    - name:  Restart the node server
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        port: ${{ secrets.SSH_PORT }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          pm2  restart gobarber-api
-    
+      - name: Install the dependencies
+        run: yarn
 
+      - name: Run build to generate dist folder
+        run: yarn build
 
+      - name: Copy code + dist folder to DigitalOCean folder
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          source: '.,!node_modules'
+          target: '~/app/gobarber-backend'
+
+      - name: Install dependencies on DigitalOcean and run migrations of TypeORM
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/app/gobarber-backend
+            yarn
+            yarn typeorm:cli migration:run
+
+      - name: Restart the node server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            pm2  restart gobarber-api
