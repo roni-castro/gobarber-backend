@@ -1,9 +1,9 @@
-import CreateAppointmentUseCase from './create-appointment.usecase';
-import FakeAppointmentRepository from '../repositories/fakes/fake-appointment.repository';
 import AppError from '@shared/error/AppError';
-import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 import FakeNotificationRepository from '@modules/notifications/repositories/fakes/fake-notification.repository';
 import FakeCacheProvider from '@shared/container/providers/cacheProvider/fakes/fake-cache-provider';
+import CreateAppointmentUseCase from './create-appointment.usecase';
+import FakeAppointmentRepository from '../repositories/fakes/fake-appointment.repository';
+import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 
 let fakeAppointmentRepository: FakeAppointmentRepository;
 let fakeNotificationRepository: FakeNotificationRepository;
@@ -44,7 +44,6 @@ describe('CreateAppointment', () => {
 
   it('should clear cache of a specific day when a new appointment is registed on it', async () => {
     jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
-    const appointmentDate = new Date(2020, 0, 30, 8, 0, 0);
     fakeCacheProvider.save('appointments:2020-01-30', { value: 'anyvalue' });
     const appointment = await createAppointmentUseCase.execute({
       provider_id: providerId,
@@ -58,13 +57,14 @@ describe('CreateAppointment', () => {
   it('should not clear cache of a specific day when a new appointment is registed on different day', async () => {
     jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
     const invalidateMock = jest.spyOn(fakeCacheProvider, 'invalidate');
-    const appointmentDate = new Date(2020, 0, 30, 8, 0, 0);
     const appointment = await createAppointmentUseCase.execute({
       provider_id: providerId,
       client_id: clientId,
       date: appointmentDate,
     });
-    expect(invalidateMock).toHaveBeenCalledWith('appointments:2020-01-30');
+    expect(invalidateMock).toHaveBeenCalledWith(
+      'appointments:provider_id-2020-01-30'
+    );
     expect(appointment.provider_id).toBe(providerId);
   });
 
