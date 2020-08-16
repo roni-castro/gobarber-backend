@@ -37,10 +37,27 @@ jobs:
         source: ".,!node_modules"
         target: "~/app/gobarber-backend"
       
-    #- name:  Override the code existing in dist folder on DigitalOcean to the new code
-    #- name:  Run "yarn" on DigitalOCean
-    #- name:  Run migrations of TypeORM
-    #- name:  Restart the node server
+    - name: Install dependencies on DigitalOcean and run migrations of TypeORM
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          cd ~/app/gobarber-backend
+          yarn
+          yarn typeorm:cli migration:run  
+
+    - name:  Restart the node server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        port: ${{ secrets.SSH_PORT }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          pm2  restart gobarber-api
     
 
 
