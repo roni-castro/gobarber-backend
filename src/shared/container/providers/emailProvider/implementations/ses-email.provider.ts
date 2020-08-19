@@ -31,7 +31,7 @@ export default class SesEmailProvider implements IEmailProvider {
   public async sendEmail({ to, from, subject, templateData }: ISendEmailDTO) {
     const template = await this.emailTemplateProvider.parse(templateData);
     const { email, name } = emailConfig.defaults.from;
-    let message: SendMailOptions = {
+    const message: SendMailOptions = {
       from: {
         name: from?.name || name,
         address: from?.email || email,

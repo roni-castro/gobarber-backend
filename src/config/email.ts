@@ -13,7 +13,7 @@ export default {
   defaults: {
     from: {
       name: 'GoBarberApp',
-      email: 'gobarberapp@zohomail.com',
+      email: 'gobarber@roni.app',
     },
   },
 } as IEmailConfig;
