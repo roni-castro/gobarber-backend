@@ -1,4 +1,5 @@
-import { startOfHour, isBefore, isAfter, format } from 'date-fns';
+import ptBR, { startOfHour, isBefore, getHours, format } from 'date-fns';
+
 import AppError from '@shared/error/AppError';
 import { inject, injectable } from 'tsyringe';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
@@ -36,15 +37,20 @@ export default class CreateAppointmentUseCase {
     if (client_id === provider_id) {
       throw new AppError('You cannot schedule an appointment with yourself');
     }
+
+    const firstServiceHourPTBR = +format(
+      new Date(parsedDate).setHours(FIRST_SERVICE_HOUR, 0, 0, 0),
+      'HH',
+      { locale: ptBR }
+    );
+    const lastServiceHourPTBR = +format(
+      new Date(parsedDate).setHours(LAST_SERVICE_HOUR, 0, 0, 0),
+      'HH',
+      { locale: ptBR }
+    );
     if (
-      isBefore(
-        parsedDate,
-        new Date(parsedDate).setHours(FIRST_SERVICE_HOUR, 0, 0, 0)
-      ) ||
-      isAfter(
-        parsedDate,
-        new Date(parsedDate).setHours(LAST_SERVICE_HOUR, 0, 0, 0)
-      )
+      getHours(parsedDate) < firstServiceHourPTBR ||
+      getHours(parsedDate) > lastServiceHourPTBR
     ) {
       throw new AppError(
         `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`
