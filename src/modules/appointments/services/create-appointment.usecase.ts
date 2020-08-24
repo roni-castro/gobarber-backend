@@ -1,12 +1,12 @@
-import { startOfHour, isBefore, getHours, format } from 'date-fns';
-import Appointment from '../infra/typeorm/entities/appointment.entity';
+import { startOfHour, isBefore, isAfter, format } from 'date-fns';
 import AppError from '@shared/error/AppError';
-import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
-import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { inject, injectable } from 'tsyringe';
-import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
 import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
+import Appointment from '../infra/typeorm/entities/appointment.entity';
+import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
+import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 
 @injectable()
 export default class CreateAppointmentUseCase {
@@ -36,10 +36,15 @@ export default class CreateAppointmentUseCase {
     if (client_id === provider_id) {
       throw new AppError('You cannot schedule an appointment with yourself');
     }
-
     if (
-      getHours(parsedDate) < FIRST_SERVICE_HOUR ||
-      getHours(parsedDate) > LAST_SERVICE_HOUR
+      isBefore(
+        parsedDate,
+        new Date(parsedDate).setHours(FIRST_SERVICE_HOUR, 0, 0, 0)
+      ) ||
+      isAfter(
+        parsedDate,
+        new Date(parsedDate).setHours(LAST_SERVICE_HOUR, 0, 0, 0)
+      )
     ) {
       throw new AppError(
         `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`
