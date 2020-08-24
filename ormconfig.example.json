@@ -17,6 +17,8 @@
     "name": "mongo",
     "type": "mongodb",
     "host": "localhost",
+    "username": "teste",
+    "password": "teste",
     "port": 27017,
     "logging": false,
     "database": "gobarber",
