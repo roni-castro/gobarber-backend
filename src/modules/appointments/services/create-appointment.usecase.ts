@@ -48,6 +48,13 @@ export default class CreateAppointmentUseCase {
       'HH',
       { locale: ptBR }
     );
+    console.log(
+      'create-appointment',
+      parsedDate,
+      firstServiceHourPTBR,
+      lastServiceHourPTBR
+    );
+    console.log(new Date());
     if (
       getHours(parsedDate) < firstServiceHourPTBR ||
       getHours(parsedDate) > lastServiceHourPTBR
