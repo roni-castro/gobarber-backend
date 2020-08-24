@@ -1,5 +1,5 @@
-import ptBR, { startOfHour, isBefore, getHours, format } from 'date-fns';
-
+import { startOfHour, format, isBefore } from 'date-fns';
+import * as moment from 'moment-timezone';
 import AppError from '@shared/error/AppError';
 import { inject, injectable } from 'tsyringe';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
@@ -38,26 +38,12 @@ export default class CreateAppointmentUseCase {
       throw new AppError('You cannot schedule an appointment with yourself');
     }
 
-    const firstServiceHourPTBR = +format(
-      new Date(parsedDate).setHours(FIRST_SERVICE_HOUR, 0, 0, 0),
-      'HH',
-      { locale: ptBR }
-    );
-    const lastServiceHourPTBR = +format(
-      new Date(parsedDate).setHours(LAST_SERVICE_HOUR, 0, 0, 0),
-      'HH',
-      { locale: ptBR }
-    );
-    console.log(
-      'create-appointment',
-      parsedDate,
-      firstServiceHourPTBR,
-      lastServiceHourPTBR
-    );
-    console.log(new Date());
+    const hourTZSaoPaulo = +moment
+      .tz(parsedDate, 'America/Sao_Paulo')
+      .format('HH');
     if (
-      getHours(parsedDate) < firstServiceHourPTBR ||
-      getHours(parsedDate) > lastServiceHourPTBR
+      hourTZSaoPaulo < FIRST_SERVICE_HOUR ||
+      hourTZSaoPaulo > LAST_SERVICE_HOUR
     ) {
       throw new AppError(
         `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`
