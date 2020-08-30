@@ -1,12 +1,12 @@
 import { startOfHour, isBefore, getHours, format } from 'date-fns';
-import Appointment from '../infra/typeorm/entities/appointment.entity';
 import AppError from '@shared/error/AppError';
-import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
-import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { inject, injectable } from 'tsyringe';
-import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
 import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
+import Appointment from '../infra/typeorm/entities/appointment.entity';
+import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
+import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 
 @injectable()
 export default class CreateAppointmentUseCase {
