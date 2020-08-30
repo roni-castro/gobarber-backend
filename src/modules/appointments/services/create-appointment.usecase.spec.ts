@@ -15,6 +15,8 @@ describe('CreateAppointment', () => {
   const providerId = 'provider_id';
   const currentDate = new Date(2020, 0, 20);
   const appointmentDate = new Date(2020, 0, 30, 8, 0, 0);
+  const TIMEZONE_AMERICA_SP = 'America/Sao_Paulo';
+  const TIMEZONE_UTC = 'UTC';
 
   beforeEach(() => {
     fakeAppointmentRepository = new FakeAppointmentRepository();
@@ -37,6 +39,7 @@ describe('CreateAppointment', () => {
       provider_id: providerId,
       client_id: clientId,
       date: appointmentDate,
+      timezone: TIMEZONE_UTC,
     });
     expect(appointment).toHaveProperty('id');
     expect(appointment.provider_id).toBe(providerId);
@@ -49,6 +52,7 @@ describe('CreateAppointment', () => {
       provider_id: providerId,
       client_id: clientId,
       date: appointmentDate,
+      timezone: TIMEZONE_UTC,
     });
     expect(await fakeCacheProvider.recover('appointments:')).toBeNull();
     expect(appointment.provider_id).toBe(providerId);
@@ -61,6 +65,7 @@ describe('CreateAppointment', () => {
       provider_id: providerId,
       client_id: clientId,
       date: appointmentDate,
+      timezone: TIMEZONE_UTC,
     });
     expect(invalidateMock).toHaveBeenCalledWith(
       'appointments:provider_id-2020-01-30'
@@ -74,6 +79,7 @@ describe('CreateAppointment', () => {
       provider_id: providerId,
       client_id: clientId,
       date: appointmentDate,
+      timezone: TIMEZONE_UTC,
     });
 
     await expect(
@@ -81,6 +87,7 @@ describe('CreateAppointment', () => {
         provider_id: providerId,
         client_id: clientId,
         date: appointmentDate,
+        timezone: TIMEZONE_UTC,
       })
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -91,12 +98,14 @@ describe('CreateAppointment', () => {
       provider_id: 'provider_id_1',
       client_id: clientId,
       date: appointmentDate,
+      timezone: TIMEZONE_UTC,
     });
 
     const response = await createAppointmentUseCase.execute({
       provider_id: 'provider_id_2',
       client_id: clientId,
       date: appointmentDate,
+      timezone: TIMEZONE_UTC,
     });
     await expect(response.provider_id).toBe('provider_id_2');
   });
@@ -107,6 +116,7 @@ describe('CreateAppointment', () => {
         provider_id: providerId,
         client_id: clientId,
         date: currentDate,
+        timezone: TIMEZONE_UTC,
       })
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -115,12 +125,13 @@ describe('CreateAppointment', () => {
     jest
       .spyOn(Date, 'now')
       .mockReturnValueOnce(new Date(2020, 4, 20, 10, 10, 0).getTime());
-    const appointmentDate = new Date(2020, 4, 20, 10, 0, 0);
+    const appointmentDateInThePast = new Date(2020, 4, 20, 10, 0, 0);
     await expect(
       createAppointmentUseCase.execute({
         provider_id: providerId,
         client_id: clientId,
-        date: appointmentDate,
+        date: appointmentDateInThePast,
+        timezone: TIMEZONE_UTC,
       })
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -132,6 +143,7 @@ describe('CreateAppointment', () => {
         provider_id: providerId,
         client_id: providerId,
         date: appointmentDate,
+        timezone: TIMEZONE_UTC,
       })
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -144,6 +156,7 @@ describe('CreateAppointment', () => {
         provider_id: providerId,
         client_id: clientId,
         date: appointmentDate,
+        timezone: TIMEZONE_UTC,
       })
     ).rejects.toBeInstanceOf(AppError);
   });
@@ -156,7 +169,89 @@ describe('CreateAppointment', () => {
         provider_id: providerId,
         client_id: clientId,
         date: appointmentDate,
+        timezone: TIMEZONE_UTC,
       })
     ).rejects.toBeInstanceOf(AppError);
+  });
+
+  describe('specific timezone', () => {
+    it('should be able to create an appointment in different timezone at the first service hour', async () => {
+      jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
+      const firstServiceHourInAmericaSP = FIRST_SERVICE_HOUR + 3; // 8h in America/Sao_Paulo
+      const appointmentDateInAmericaSP8h = new Date(
+        2020,
+        4,
+        20,
+        firstServiceHourInAmericaSP
+      );
+      const response = await createAppointmentUseCase.execute({
+        provider_id: 'provider_id',
+        client_id: clientId,
+        date: appointmentDateInAmericaSP8h,
+        timezone: TIMEZONE_AMERICA_SP,
+      });
+      expect(response.date.getHours()).toBe(
+        appointmentDateInAmericaSP8h.getHours()
+      );
+    });
+    it('should be able to create an appointment in different timezone at the end service hour', async () => {
+      jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
+      const lastServiceHourInAmericaSP = LAST_SERVICE_HOUR + 3; // 17h in America/Sao_Paulo
+      const appointmentDateInAmericaSP17h = new Date(
+        2020,
+        4,
+        20,
+        lastServiceHourInAmericaSP
+      );
+
+      const response = await createAppointmentUseCase.execute({
+        provider_id: 'provider_id_1',
+        client_id: clientId,
+        date: appointmentDateInAmericaSP17h,
+        timezone: TIMEZONE_AMERICA_SP,
+      });
+      expect(response.date.getHours()).toBe(
+        appointmentDateInAmericaSP17h.getHours()
+      );
+    });
+
+    it('should be not able to create an appointment in different timezone before the first service hour', async () => {
+      jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
+      const beforeFirstServiceHourInAmericaSP = FIRST_SERVICE_HOUR - 1 + 3; // 7h in America/Sao_Paulo (+3h)
+      const appointmentDateBeforeFirstServiceHourInAmericaSP = new Date(
+        2020,
+        4,
+        20,
+        beforeFirstServiceHourInAmericaSP
+      );
+      await expect(
+        createAppointmentUseCase.execute({
+          provider_id: providerId,
+          client_id: clientId,
+          date: appointmentDateBeforeFirstServiceHourInAmericaSP,
+          timezone: TIMEZONE_AMERICA_SP,
+        })
+      ).rejects.toBeInstanceOf(AppError);
+    });
+
+    it('should be not able to create an appointment in different timezone after the end service hour', async () => {
+      jest.spyOn(Date, 'now').mockReturnValue(currentDate.getTime());
+      const afterLastServiceHourInAmericaSP = LAST_SERVICE_HOUR + 1 + 3; // 17h in America/Sao_Paulo (+3h)
+      const appointmentDateAfterLastServiceHourInAmericaSP = new Date(
+        2020,
+        4,
+        20,
+        afterLastServiceHourInAmericaSP
+      );
+
+      await expect(
+        createAppointmentUseCase.execute({
+          provider_id: providerId,
+          client_id: clientId,
+          date: appointmentDateAfterLastServiceHourInAmericaSP,
+          timezone: TIMEZONE_AMERICA_SP,
+        })
+      ).rejects.toBeInstanceOf(AppError);
+    });
   });
 });

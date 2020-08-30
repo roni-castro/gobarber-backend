@@ -1,13 +1,19 @@
-import { startOfHour, isBefore, getHours, format } from 'date-fns';
+import { startOfHour, format, isBefore } from 'date-fns';
+import * as moment from 'moment-timezone';
 import AppError from '@shared/error/AppError';
 import { inject, injectable } from 'tsyringe';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
 import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
 import Appointment from '../infra/typeorm/entities/appointment.entity';
-import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
 import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 
+interface ICreateAppointmentRequestDTO {
+  provider_id: string;
+  client_id: string;
+  date: Date;
+  timezone: string;
+}
 @injectable()
 export default class CreateAppointmentUseCase {
   constructor(
@@ -23,7 +29,8 @@ export default class CreateAppointmentUseCase {
     client_id,
     provider_id,
     date,
-  }: ICreateAppointmentDTO): Promise<Appointment> {
+    timezone,
+  }: ICreateAppointmentRequestDTO): Promise<Appointment> {
     const parsedDate = startOfHour(date);
     const appointmentFound = await this.repository.findByDate(
       parsedDate,
@@ -37,9 +44,10 @@ export default class CreateAppointmentUseCase {
       throw new AppError('You cannot schedule an appointment with yourself');
     }
 
+    const hourInTimeZone = +moment.tz(parsedDate, timezone).format('HH');
     if (
-      getHours(parsedDate) < FIRST_SERVICE_HOUR ||
-      getHours(parsedDate) > LAST_SERVICE_HOUR
+      hourInTimeZone < FIRST_SERVICE_HOUR ||
+      hourInTimeZone > LAST_SERVICE_HOUR
     ) {
       throw new AppError(
         `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`

@@ -11,10 +11,12 @@ export default class AppointmentController {
         CreateAppointmentUseCase
       );
       const { provider_id, date } = request.body;
+      const { timezone } = request.headers;
       const appointment = await createAppointmentUseCase.execute({
         date,
         client_id: request.user.id,
         provider_id,
+        timezone: timezone as string,
       });
       return response.json(classToClass(appointment));
     } catch (error) {
