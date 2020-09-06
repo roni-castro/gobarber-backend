@@ -1,13 +1,19 @@
-import { startOfHour, isBefore, getHours, format } from 'date-fns';
-import Appointment from '../infra/typeorm/entities/appointment.entity';
+import { startOfHour, format, isBefore } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import AppError from '@shared/error/AppError';
-import { ICreateAppointmentDTO } from '../dtos/AppointmentRequestDTO';
-import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { inject, injectable } from 'tsyringe';
-import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
 import ICacheProvider from '@shared/container/providers/cacheProvider/models/i-cache-provider';
+import Appointment from '../infra/typeorm/entities/appointment.entity';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
+import { FIRST_SERVICE_HOUR, LAST_SERVICE_HOUR } from '../utils/constants';
 
+interface ICreateAppointmentRequestDTO {
+  provider_id: string;
+  client_id: string;
+  date: Date;
+  timezone: string;
+}
 @injectable()
 export default class CreateAppointmentUseCase {
   constructor(
@@ -23,8 +29,10 @@ export default class CreateAppointmentUseCase {
     client_id,
     provider_id,
     date,
-  }: ICreateAppointmentDTO): Promise<Appointment> {
+    timezone,
+  }: ICreateAppointmentRequestDTO): Promise<Appointment> {
     const parsedDate = startOfHour(date);
+    const parsedDateInUTC = utcToZonedTime(parsedDate, timezone);
     const appointmentFound = await this.repository.findByDate(
       parsedDate,
       provider_id
@@ -38,8 +46,8 @@ export default class CreateAppointmentUseCase {
     }
 
     if (
-      getHours(parsedDate) < FIRST_SERVICE_HOUR ||
-      getHours(parsedDate) > LAST_SERVICE_HOUR
+      parsedDateInUTC.getHours() < FIRST_SERVICE_HOUR ||
+      parsedDateInUTC.getHours() > LAST_SERVICE_HOUR
     ) {
       throw new AppError(
         `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`
@@ -47,7 +55,7 @@ export default class CreateAppointmentUseCase {
     }
 
     const currentDate = Date.now();
-    if (isBefore(parsedDate, currentDate)) {
+    if (isBefore(parsedDateInUTC, currentDate)) {
       throw new AppError('You cannot schedule an appointment on a past date');
     }
 

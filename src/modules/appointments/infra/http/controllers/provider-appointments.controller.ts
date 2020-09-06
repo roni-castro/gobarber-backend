@@ -10,11 +10,13 @@ export default class ProviderAppointmentsController {
     );
     const { day, month, year } = request.query;
     const providerId = request.user.id;
+    const { timezone } = request.headers;
     const appointments = await listProviderAppointmentsUseCase.execute({
       providerId,
       day: +day,
       month: +month,
       year: +year,
+      timezone: timezone as string,
     });
     return response.json(classToClass(appointments));
   }

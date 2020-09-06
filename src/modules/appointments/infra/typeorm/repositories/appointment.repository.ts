@@ -1,9 +1,9 @@
 import { Repository, getRepository, Raw } from 'typeorm';
 
-import Appointment from '../entities/appointment.entity';
 import IAppointmentRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import { ICreateAppointmentDTO } from '@modules/appointments/dtos/AppointmentRequestDTO';
 import IFindAppointmentDTO from '@modules/appointments/repositories/dtos/filter-appointment.dto';
+import Appointment from '../entities/appointment.entity';
 
 class AppointmentRepository implements IAppointmentRepository {
   private ormRepository: Repository<Appointment>;
@@ -20,6 +20,7 @@ class AppointmentRepository implements IAppointmentRepository {
     providerId,
     month,
     year,
+    timezone,
   }: IFindAppointmentDTO) {
     const parsedMonth = String(month).padStart(2, '0');
     return this.ormRepository.find({
@@ -27,7 +28,7 @@ class AppointmentRepository implements IAppointmentRepository {
         provider_id: providerId,
         date: Raw(
           dateFieldName =>
-            `to_char(${dateFieldName}, 'MM-YYYY') = '${parsedMonth}-${year}'`
+            `to_char(${dateFieldName} at time zone '${timezone}', 'MM-YYYY') = '${parsedMonth}-${year}'`
         ),
       },
     });
@@ -38,6 +39,7 @@ class AppointmentRepository implements IAppointmentRepository {
     day,
     month,
     year,
+    timezone,
   }: IFindAppointmentDTO) {
     const parsedDay = String(day).padStart(2, '0');
     const parsedMonth = String(month).padStart(2, '0');
@@ -46,7 +48,7 @@ class AppointmentRepository implements IAppointmentRepository {
         provider_id: providerId,
         date: Raw(
           dateFieldName =>
-            `to_char(${dateFieldName}, 'DD-MM-YYYY') =  '${parsedDay}-${parsedMonth}-${year}'`
+            `to_char(${dateFieldName} at time zone '${timezone}', 'DD-MM-YYYY') = '${parsedDay}-${parsedMonth}-${year}'`
         ),
       },
       order: { date: 'ASC' },

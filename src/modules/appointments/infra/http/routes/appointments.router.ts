@@ -26,6 +26,9 @@ appointmentsRouter.get(
       month: Joi.number().integer().min(1).max(12).required(),
       year: Joi.number().integer().min(1900).max(9999).required(),
     }),
+    [Segments.HEADERS]: Joi.object({
+      timezone: Joi.string().required(),
+    }).unknown(),
   }),
   providerAppointmentsController.index
 );

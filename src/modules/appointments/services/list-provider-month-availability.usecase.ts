@@ -1,12 +1,14 @@
 import { inject, injectable } from 'tsyringe';
-import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { getDaysInMonth, getDate, isAfter } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import { NUMBER_OF_SERVICE_HOURS_A_DAY } from '../utils/constants';
 
 interface IRequest {
   userId: string;
   month: number;
   year: number;
+  timezone: string;
 }
 
 type IResponse = Array<{
@@ -21,12 +23,18 @@ export default class ListProviderMonthAvailabilityUseCase {
     private appointmentRepository: IAppointmentRepository
   ) {}
 
-  async execute({ userId, month, year }: IRequest): Promise<IResponse> {
+  async execute({
+    userId,
+    month,
+    year,
+    timezone,
+  }: IRequest): Promise<IResponse> {
     const appointments = await this.appointmentRepository.findAllInMonthFromProvider(
       {
         providerId: userId,
         month,
         year,
+        timezone,
       }
     );
     const numberOfDaysInMonth = getDaysInMonth(new Date(year, month - 1));
@@ -39,7 +47,8 @@ export default class ListProviderMonthAvailabilityUseCase {
       const dateToBeCompared = new Date(year, month - 1, day, 23, 59, 59);
       const isAppointmentDateInFuture = isAfter(dateToBeCompared, currentDate);
       const appointmentsInDay = appointments.filter(
-        appointment => getDate(appointment.date) === day
+        appointment =>
+          getDate(utcToZonedTime(appointment.date, timezone)) === day
       );
       return {
         day,

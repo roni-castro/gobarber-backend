@@ -1,6 +1,7 @@
 import { inject, injectable } from 'tsyringe';
+import { isAfter, getHours } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import IAppointmentRepository from '../repositories/IAppointmentsRepository';
-import { getHours, isAfter } from 'date-fns';
 import {
   NUMBER_OF_SERVICE_HOURS_A_DAY,
   FIRST_SERVICE_HOUR,
@@ -11,6 +12,7 @@ interface IRequest {
   day: number;
   month: number;
   year: number;
+  timezone: string;
 }
 
 type IResponse = Array<{
@@ -25,13 +27,20 @@ export default class ListDayAvailabilityProvidersUseCase {
     private appointmentRepository: IAppointmentRepository
   ) {}
 
-  async execute({ userId, day, month, year }: IRequest): Promise<IResponse> {
+  async execute({
+    userId,
+    day,
+    month,
+    year,
+    timezone,
+  }: IRequest): Promise<IResponse> {
     const appointments = await this.appointmentRepository.findAllInDayFromProvider(
       {
         providerId: userId,
         month,
         year,
         day,
+        timezone,
       }
     );
     const hoursOfTheDay = Array.from(
@@ -39,9 +48,11 @@ export default class ListDayAvailabilityProvidersUseCase {
       (_, index) => FIRST_SERVICE_HOUR + index
     );
     const providerAvailabilityHours: IResponse = hoursOfTheDay.map(hour => {
-      const hasAppointmentOnCurrentHour = appointments.find(
-        appointment => getHours(appointment.date) === hour
-      );
+      const hasAppointmentOnCurrentHour = appointments.find(appointment => {
+        const appointmentDateInTZ = utcToZonedTime(appointment.date, timezone);
+        return getHours(appointmentDateInTZ) === hour;
+      });
+
       const currentDate = new Date(Date.now());
       const dateToBeScheduled = new Date(year, month - 1, day, hour);
       return {
