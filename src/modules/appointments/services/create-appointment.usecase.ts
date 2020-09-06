@@ -1,5 +1,5 @@
 import { startOfHour, format, isBefore } from 'date-fns';
-import * as moment from 'moment-timezone';
+import { utcToZonedTime } from 'date-fns-tz';
 import AppError from '@shared/error/AppError';
 import { inject, injectable } from 'tsyringe';
 import INotificationRepository from '@modules/notifications/repositories/i-notification.repository';
@@ -32,6 +32,7 @@ export default class CreateAppointmentUseCase {
     timezone,
   }: ICreateAppointmentRequestDTO): Promise<Appointment> {
     const parsedDate = startOfHour(date);
+    const parsedDateInUTC = utcToZonedTime(parsedDate, timezone);
     const appointmentFound = await this.repository.findByDate(
       parsedDate,
       provider_id
@@ -44,10 +45,9 @@ export default class CreateAppointmentUseCase {
       throw new AppError('You cannot schedule an appointment with yourself');
     }
 
-    const hourInTimeZone = +moment.tz(parsedDate, timezone).format('HH');
     if (
-      hourInTimeZone < FIRST_SERVICE_HOUR ||
-      hourInTimeZone > LAST_SERVICE_HOUR
+      parsedDateInUTC.getHours() < FIRST_SERVICE_HOUR ||
+      parsedDateInUTC.getHours() > LAST_SERVICE_HOUR
     ) {
       throw new AppError(
         `You can only create an appointment between ${FIRST_SERVICE_HOUR}h and ${LAST_SERVICE_HOUR}h`
@@ -55,7 +55,7 @@ export default class CreateAppointmentUseCase {
     }
 
     const currentDate = Date.now();
-    if (isBefore(parsedDate, currentDate)) {
+    if (isBefore(parsedDateInUTC, currentDate)) {
       throw new AppError('You cannot schedule an appointment on a past date');
     }
 
