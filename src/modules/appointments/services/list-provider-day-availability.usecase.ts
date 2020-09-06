@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
-import { isAfter } from 'date-fns';
-import * as moment from 'moment-timezone';
+import { isAfter, getHours } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import IAppointmentRepository from '../repositories/IAppointmentsRepository';
 import {
   NUMBER_OF_SERVICE_HOURS_A_DAY,
@@ -40,6 +40,7 @@ export default class ListDayAvailabilityProvidersUseCase {
         month,
         year,
         day,
+        timezone,
       }
     );
     const hoursOfTheDay = Array.from(
@@ -48,12 +49,10 @@ export default class ListDayAvailabilityProvidersUseCase {
     );
     const providerAvailabilityHours: IResponse = hoursOfTheDay.map(hour => {
       const hasAppointmentOnCurrentHour = appointments.find(appointment => {
-        const hourInUtcTimeZone = +moment
-          .tz(appointment.date, timezone)
-          .format('HH');
-
-        return hourInUtcTimeZone === hour;
+        const appointmentDateInTZ = utcToZonedTime(appointment.date, timezone);
+        return getHours(appointmentDateInTZ) === hour;
       });
+
       const currentDate = new Date(Date.now());
       const dateToBeScheduled = new Date(year, month - 1, day, hour);
       return {

@@ -9,11 +9,13 @@ export default class ProviderMonthAvailabilityController {
     );
     const { provider_id } = request.params;
     const { month, year } = request.query;
+    const { timezone } = request.headers;
     const providerAvailabilityDays = await listProviderMonthAvailabilityUseCase.execute(
       {
         userId: provider_id,
         month: +month,
         year: +year,
+        timezone: timezone as string,
       }
     );
     return response.json(providerAvailabilityDays);
