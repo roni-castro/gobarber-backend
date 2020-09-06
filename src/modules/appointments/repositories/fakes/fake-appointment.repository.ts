@@ -1,15 +1,16 @@
 import { uuid } from 'uuidv4';
 import { isEqual, getYear, getMonth, getDate } from 'date-fns';
 
-import Appointment from '../../infra/typeorm/entities/appointment.entity';
 import IAppointmentRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import { ICreateAppointmentDTO } from '@modules/appointments/dtos/AppointmentRequestDTO';
+import { utcToZonedTime } from 'date-fns-tz';
+import Appointment from '../../infra/typeorm/entities/appointment.entity';
 import IFindAppointmentDTO from '../dtos/filter-appointment.dto';
 
 class FakeAppointmentRepository implements IAppointmentRepository {
   private appointments: Appointment[] = [];
 
-  async find() {
+  async find(): Promise<Appointment[]> {
     return this.appointments;
   }
 
@@ -17,13 +18,19 @@ class FakeAppointmentRepository implements IAppointmentRepository {
     providerId,
     year,
     month,
-  }: IFindAppointmentDTO) {
-    return this.appointments.filter(
-      appointment =>
+    timezone,
+  }: IFindAppointmentDTO): Promise<Appointment[]> {
+    return this.appointments.filter(appointment => {
+      const appointmentDateInTimezone = utcToZonedTime(
+        appointment.date,
+        timezone
+      );
+      return (
         appointment.provider_id === providerId &&
-        getYear(appointment.date) === year &&
-        getMonth(appointment.date) + 1 == month
-    );
+        getYear(appointmentDateInTimezone) === year &&
+        getMonth(appointmentDateInTimezone) + 1 === month
+      );
+    });
   }
 
   async findAllInDayFromProvider({
@@ -31,17 +38,27 @@ class FakeAppointmentRepository implements IAppointmentRepository {
     year,
     month,
     day,
-  }: IFindAppointmentDTO) {
-    return this.appointments.filter(
-      appointment =>
+    timezone,
+  }: IFindAppointmentDTO): Promise<Appointment[]> {
+    return this.appointments.filter(appointment => {
+      const appointmentDateInTimezone = utcToZonedTime(
+        appointment.date,
+        timezone
+      );
+      return (
         appointment.provider_id === providerId &&
-        getYear(appointment.date) === year &&
-        getMonth(appointment.date) + 1 == month &&
-        getDate(appointment.date) === day
-    );
+        getYear(appointmentDateInTimezone) === year &&
+        getMonth(appointmentDateInTimezone) + 1 === month &&
+        getDate(appointmentDateInTimezone) === day
+      );
+    });
   }
 
-  async create({ date, provider_id, client_id }: ICreateAppointmentDTO) {
+  async create({
+    date,
+    provider_id,
+    client_id,
+  }: ICreateAppointmentDTO): Promise<Appointment> {
     const appointment = new Appointment();
     Object.assign(appointment, { id: uuid(), date, provider_id, client_id });
     this.appointments.push(appointment);

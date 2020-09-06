@@ -3,4 +3,5 @@ export default interface IFindAppointmentDTO {
   day?: number;
   month?: number;
   year?: number;
+  timezone: string;
 }
